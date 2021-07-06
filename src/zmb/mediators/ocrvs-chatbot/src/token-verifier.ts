@@ -17,7 +17,7 @@
 // of modules even more difficult unless we publish to npm.
 
 import fetch from 'node-fetch'
-import * as Hapi from 'hapi'
+import * as Hapi from '@hapi/hapi'
 
 export const verifyToken = async (token: string, authUrl: string) => {
   const res = await fetch(`${authUrl}/verifyToken`, {
