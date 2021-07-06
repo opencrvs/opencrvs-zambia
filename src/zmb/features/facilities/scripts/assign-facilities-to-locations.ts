@@ -15,7 +15,7 @@ import {
   ADMIN_STRUCTURE_SOURCE
 } from '@resources/zmb/constants'
 import chalk from 'chalk'
-import { internal } from 'boom'
+import { internal } from '@hapi/boom'
 import {
   composeAndSaveFacilities,
   generateLocationResource

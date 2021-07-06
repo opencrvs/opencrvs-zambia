@@ -14,7 +14,7 @@ require('app-module-path').addPath(require('path').join(__dirname, '../'))
 
 // tslint:enable no-var-requires
 import fetch from 'node-fetch'
-import * as Hapi from 'hapi'
+import * as Hapi from '@hapi/hapi'
 import { readFileSync } from 'fs'
 import getPlugins from '@resources/config/plugins'
 import * as usrMgntDB from '@resources/database'
