@@ -22,7 +22,7 @@
     "@types/node-telegram-bot-api": "^0.40.2",
     "@types/pino": "^5.14.0",
     "app-module-path": "^2.2.0",
-    "boom": "^7.2.0",
+    "@hapi/boom": "^7.2.0",
     "lodash": "^4.17.21",
     "moment": "^2.22.2",
     "node-fetch": "^2.6.1",
@@ -31,7 +31,6 @@
     "redis": "^3.1.1"
   },
   "devDependencies": {
-    "@types/boom": "^7.2.0",
     "@types/jest": "^24.0.13",
     "@types/lodash": "^4.14.117",
     "@types/node-fetch": "^2.3.4",
