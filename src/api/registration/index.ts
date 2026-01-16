@@ -155,20 +155,19 @@ export async function onMosipBirthRegisterHandler(
   const event = request.payload
   const eventId = event.id
   const action = getPendingAction(event.actions)
-  console.log('Should send registration to Requires Updates queue but doesnt')
+  /*console.log('Should send registration to Requires Updates queue but doesnt')
   return h
     .response({
       reason: 'Unexpected error in OpenCRVS-MOSIP interoperability layer'
     })
     .code(400)
-  /*
+  */
 
   console.log('Should send registration to Requires Updates queue but doesnt')
   setTimeout(() => {
     rejectRequestedRegistration(token, eventId, action.id)
   }, 10000)
   return h.response().code(202)
-  */
 
   /*const registrationNumber = generateRegistrationNumber()
 
