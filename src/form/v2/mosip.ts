@@ -168,8 +168,8 @@ export const getMOSIPIntegrationFields = (
           redirectUri: window().location.get('href')
         },
         params: {
-          code: field(`${page}.query-params`).get('code'),
-          state: field(`${page}.query-params`).get('state')
+          code: field(`${page}.query-params`).get('data.code'),
+          state: field(`${page}.query-params`).get('data.state')
         },
         errorValue: {
           verificationStatus: 'failed'
