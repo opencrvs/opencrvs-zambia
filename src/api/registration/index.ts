@@ -23,6 +23,10 @@ import { v4 as uuidv4 } from 'uuid'
 import { sendInformantNotification } from '../notification/informantNotification'
 import { createMosipInteropClient } from '@opencrvs/mosip/api'
 import { logger } from '@countryconfig/logger'
+import {
+  shouldForwardBirthRegistrationToMosip,
+  shouldForwardDeathRegistrationToMosip
+} from '@countryconfig/form/v2/mosip'
 
 export interface ActionConfirmationRequest extends Hapi.Request {
   payload: EventDocument
@@ -147,38 +151,39 @@ async function rejectRequestedRegistration(
   return event
 }
 
+async function requestRejection(
+  token: string,
+  eventId: string,
+  actionId: string,
+  reason?: string
+) {
+  const url = new URL('events', GATEWAY_URL).toString()
+  const client = createClient(url, `Bearer ${token}`)
+  const event = await client.event.actions.reject.request.mutate({
+    transactionId: uuidv4(),
+    eventId,
+    actionId,
+    reason
+  })
+
+  return event
+}
+
 export async function onMosipBirthRegisterHandler(
   request: ActionConfirmationRequest,
   h: Hapi.ResponseToolkit
 ) {
   const token = request.auth.artifacts.token as string
   const event = request.payload
-  const eventId = event.id
-  const action = getPendingAction(event.actions)
-  /*console.log('Should send registration to Requires Updates queue but doesnt')
-  return h
-    .response({
-      reason: 'Unexpected error in OpenCRVS-MOSIP interoperability layer'
-    })
-    .code(400)
-  */
+  const declaration = aggregateActionDeclarations(event)
 
-  console.log('Should send registration to Requires Updates queue but doesnt')
-  setTimeout(() => {
-    rejectRequestedRegistration(token, eventId, action.id)
-  }, 10000)
-  return h.response().code(202)
+  const registrationNumber = generateRegistrationNumber()
+  const pendingAction = getPendingAction(event.actions)
 
-  /*const registrationNumber = generateRegistrationNumber()
-
-  const shouldForwardToMosip = true // This should be determined by your custom logic, e.g., based on verification status
-
-  await sendInformantNotification({ event, token, registrationNumber })
-
-  if (!shouldForwardToMosip) {
-    return h
-      .response({ registrationNumber: generateRegistrationNumber() })
-      .code(200)
+  const { valid, reason } = shouldForwardBirthRegistrationToMosip(declaration)
+  if (!valid) {
+    requestRejection(token, event.id, pendingAction.id, reason)
+    return h.response().code(400)
   }
 
   try {
@@ -186,7 +191,6 @@ export async function onMosipBirthRegisterHandler(
       'Passed country specified custom logic check for id creation. Forwarding to MOSIP...'
     )
 
-    const pendingAction = getPendingAction(event.actions)
     const declaration = deepMerge(
       aggregateActionDeclarations(event),
       pendingAction.declaration
@@ -222,7 +226,7 @@ export async function onMosipBirthRegisterHandler(
         reason: 'Unexpected error in OpenCRVS-MOSIP interoperability layer'
       })
       .code(400)
-  }*/
+  }
 }
 
 export async function onMosipDeathRegisterHandler(
@@ -231,17 +235,18 @@ export async function onMosipDeathRegisterHandler(
 ) {
   const token = request.auth.artifacts.token as string
   const event = request.payload
+  const declaration = aggregateActionDeclarations(event)
 
   const registrationNumber = generateRegistrationNumber()
 
-  const shouldForwardToMosip = true // This should be determined by your custom logic, e.g., based on verification status
+  const { valid, reason } = shouldForwardDeathRegistrationToMosip(declaration)
+  const pendingAction = getPendingAction(event.actions)
 
   await sendInformantNotification({ event, token, registrationNumber })
 
-  if (!shouldForwardToMosip) {
-    return h
-      .response({ registrationNumber: generateRegistrationNumber() })
-      .code(200)
+  if (!valid) {
+    requestRejection(token, event.id, pendingAction.id, reason)
+    return h.response().code(400)
   }
 
   try {
@@ -249,7 +254,6 @@ export async function onMosipDeathRegisterHandler(
       'Passed country specified custom logic check for id creation. Forwarding to MOSIP...'
     )
 
-    const pendingAction = getPendingAction(event.actions)
     const declaration = deepMerge(
       aggregateActionDeclarations(event),
       pendingAction.declaration
