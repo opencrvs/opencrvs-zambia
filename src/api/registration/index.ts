@@ -141,7 +141,6 @@ async function rejectRequestedRegistration(
 ) {
   const url = new URL('events', GATEWAY_URL).toString()
   const client = createClient(url, `Bearer ${token}`)
-  console.log('Should send registration to Requires Updates queue but doesnt')
   const event = await client.event.actions.register.reject.mutate({
     transactionId: uuidv4(),
     eventId,
@@ -163,7 +162,7 @@ async function requestRejection(
     transactionId: uuidv4(),
     eventId,
     actionId,
-    reason
+    content: { reason }
   })
 
   return event
@@ -182,8 +181,9 @@ export async function onMosipBirthRegisterHandler(
 
   const { valid, reason } = shouldForwardBirthRegistrationToMosip(declaration)
   if (!valid) {
-    requestRejection(token, event.id, pendingAction.id, reason)
-    return h.response().code(400)
+    await rejectRequestedRegistration(token, event.id, pendingAction.id)
+    await requestRejection(token, event.id, pendingAction.id, reason)
+    return h.response().code(202)
   }
 
   try {
@@ -245,8 +245,9 @@ export async function onMosipDeathRegisterHandler(
   await sendInformantNotification({ event, token, registrationNumber })
 
   if (!valid) {
-    requestRejection(token, event.id, pendingAction.id, reason)
-    return h.response().code(400)
+    await rejectRequestedRegistration(token, event.id, pendingAction.id)
+    await requestRejection(token, event.id, pendingAction.id, reason)
+    return h.response().code(202)
   }
 
   try {
