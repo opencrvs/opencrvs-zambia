@@ -37,14 +37,23 @@ const BIRTH_REGISTRATION_MOSIP_CONSTRAINTS = [
     validatorFailureReason: `Child is older than ${CHILD_MAX_AGE_YEARS_FOR_MOSIP} years, cannot forward to MOSIP`
   },
   {
-    fieldId: 'mother.verified',
-    expectedValues: ['verified', 'authenticated'],
-    rejectReason: 'Mother identity not verified or authenticated'
-  },
-  {
-    fieldId: 'father.verified',
-    expectedValues: ['verified', 'authenticated'],
-    rejectReason: 'Father identity not verified or authenticated'
+    fieldId: 'parent.verified',
+    expectedValues: 'any',
+    rejectReason:
+      'At least one parent identity must be verified or authenticated',
+    validator: (value: any, declaration?: Record<string, any>) => {
+      const motherVerified = declaration?.['mother.verified']
+      const fatherVerified = declaration?.['father.verified']
+
+      const isMotherValid = ['verified', 'authenticated'].includes(
+        motherVerified
+      )
+      const isFatherValid = ['verified', 'authenticated'].includes(
+        fatherVerified
+      )
+
+      return isMotherValid || isFatherValid
+    }
   }
 ]
 
