@@ -180,6 +180,10 @@ export async function onMosipBirthRegisterHandler(
   const pendingAction = getPendingAction(event.actions)
 
   const { valid, reason } = shouldForwardBirthRegistrationToMosip(declaration)
+
+  // TBD: Should we let user know if they should wait for MOSIP registration to complete or send notification here?
+  // await sendInformantNotification({ event, token, registrationNumber })
+
   if (!valid) {
     await rejectRequestedRegistration(token, event.id, pendingAction.id)
     await requestRejection(token, event.id, pendingAction.id, reason)
@@ -242,7 +246,8 @@ export async function onMosipDeathRegisterHandler(
   const { valid, reason } = shouldForwardDeathRegistrationToMosip(declaration)
   const pendingAction = getPendingAction(event.actions)
 
-  await sendInformantNotification({ event, token, registrationNumber })
+  // TBD: Should we let user know if they should wait for MOSIP registration to complete or send notification here?
+  // await sendInformantNotification({ event, token, registrationNumber })
 
   if (!valid) {
     await rejectRequestedRegistration(token, event.id, pendingAction.id)
