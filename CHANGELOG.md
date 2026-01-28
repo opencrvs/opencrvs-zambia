@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.9.7
+
+### Bug fixes
+
+- Fixed countryconfig service not rejecting registrations when MOSIP configurable conditional logic fails. [#11588](https://github.com/opencrvs/opencrvs-core/issues/11588)
+
 ## 1.9.3
 
 ### New features
