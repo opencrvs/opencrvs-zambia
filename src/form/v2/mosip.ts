@@ -3,6 +3,7 @@ import {
   OPENID_PROVIDER_CLIENT_ID,
   ESIGNET_REDIRECT_URL
 } from '@countryconfig/constants'
+import { logger } from '@countryconfig/logger'
 import {
   FieldConditional,
   and,
@@ -16,6 +17,114 @@ import {
   FieldReference,
   window
 } from '@opencrvs/toolkit/events'
+import addYears from 'date-fns/addYears'
+import isAfter from 'date-fns/isAfter'
+
+const CHILD_MAX_AGE_YEARS_FOR_MOSIP = 10
+
+const BIRTH_REGISTRATION_MOSIP_CONSTRAINTS = [
+  {
+    fieldId: 'child.dob',
+    expectedValues: 'any',
+    rejectReason: 'Child date of birth not provided',
+    validator: (value: any) => {
+      const mosipEligibilityExpiryDate = addYears(
+        new Date(value),
+        CHILD_MAX_AGE_YEARS_FOR_MOSIP
+      )
+      return !isAfter(Date.now(), mosipEligibilityExpiryDate)
+    },
+    validatorFailureReason: `Child is older than ${CHILD_MAX_AGE_YEARS_FOR_MOSIP} years, cannot forward to MOSIP`
+  },
+  {
+    fieldId: 'parent.verified',
+    expectedValues: 'any',
+    rejectReason:
+      'At least one parent identity must be verified or authenticated',
+    validator: (value: any, declaration?: Record<string, any>) => {
+      const motherVerified = declaration?.['mother.verified']
+      const fatherVerified = declaration?.['father.verified']
+
+      const isMotherValid = ['verified', 'authenticated'].includes(
+        motherVerified
+      )
+      const isFatherValid = ['verified', 'authenticated'].includes(
+        fatherVerified
+      )
+
+      return isMotherValid || isFatherValid
+    }
+  }
+]
+
+const DEATH_REGISTRATION_MOSIP_CONSTRAINTS = [
+  {
+    fieldId: 'spouse.verified',
+    expectedValues: ['verified', 'authenticated'],
+    rejectReason: 'Spouse identity not verified or authenticated',
+    validator: (value: any, declaration?: Record<string, any>) => {
+      if (declaration?.['informant.relation'] === 'SPOUSE') {
+        return ['verified', 'authenticated'].includes(value)
+      }
+      return true // Skip this constraint if not spouse
+    }
+  },
+  {
+    fieldId: 'informant.verified',
+    expectedValues: ['verified', 'authenticated'],
+    rejectReason: 'Informant identity not verified or authenticated',
+    validator: (value: any, declaration?: Record<string, any>) => {
+      if (declaration?.['informant.relation'] !== 'SPOUSE') {
+        return ['verified', 'authenticated'].includes(value)
+      }
+      return true // Skip this constraint if spouse
+    }
+  }
+]
+
+const validateConstraints = (
+  declaration: Record<string, any>,
+  constraints: Array<{
+    fieldId: string
+    expectedValues: string | string[]
+    rejectReason: string
+    // eslint-disable-next-line no-unused-vars
+    validator?: (value: any, declaration?: Record<string, any>) => boolean
+    validatorFailureReason?: string
+  }>
+): { valid: boolean; reason?: string } => {
+  for (const constraint of constraints) {
+    const value = declaration[constraint.fieldId]
+
+    if (constraint.validator) {
+      if (!constraint.validator(value, declaration)) {
+        const reason =
+          constraint.validatorFailureReason || constraint.rejectReason
+        logger.info(reason)
+        return { valid: false, reason }
+      }
+      continue
+    }
+
+    if (constraint.expectedValues === 'any') {
+      if (value === undefined) {
+        logger.info(constraint.rejectReason)
+        return { valid: false, reason: constraint.rejectReason }
+      }
+    } else {
+      const expectedValues = Array.isArray(constraint.expectedValues)
+        ? constraint.expectedValues
+        : [constraint.expectedValues]
+
+      if (!expectedValues.includes(value)) {
+        logger.info(constraint.rejectReason)
+        return { valid: false, reason: constraint.rejectReason }
+      }
+    }
+  }
+
+  return { valid: true }
+}
 
 const upsertConditional = (
   conditionals: FieldConditional[],
@@ -335,4 +444,32 @@ export const connectToMOSIPVerificationStatus = (
     ...fieldInput,
     conditionals: updatedConditionals
   }
+}
+
+/**
+ * Determines whether the birth registration should be forwarded to MOSIP.
+ * @param declaration The declaration object containing event data.
+ * @returns Object with valid boolean and optional reject reason.
+ */
+export function shouldForwardBirthRegistrationToMosip(
+  declaration: Record<string, any>
+): { valid: boolean; reason?: string } {
+  logger.info('Evaluating whether to forward birth registration to MOSIP...')
+
+  // Validate all constraints including age eligibility
+  return validateConstraints(declaration, BIRTH_REGISTRATION_MOSIP_CONSTRAINTS)
+}
+
+/**
+ * Determines whether the death registration should be forwarded to MOSIP.
+ * @param declaration The declaration object containing event data.
+ * @returns Object with valid boolean and optional reject reason.
+ */
+export function shouldForwardDeathRegistrationToMosip(
+  declaration: Record<string, any>
+): { valid: boolean; reason?: string } {
+  logger.info('Evaluating whether to forward death registration to MOSIP...')
+
+  // Validate all constraints
+  return validateConstraints(declaration, DEATH_REGISTRATION_MOSIP_CONSTRAINTS)
 }

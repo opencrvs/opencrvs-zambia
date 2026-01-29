@@ -70,8 +70,7 @@ import {
 import { Event } from './form/types/types'
 import {
   onMosipBirthRegisterHandler,
-  onMosipDeathRegisterHandler,
-  onRegisterHandler
+  onMosipDeathRegisterHandler
 } from './api/registration'
 import { workqueueconfigHandler } from './api/workqueue/handler'
 import getUserNotificationRoutes from './config/routes/userNotificationRoutes'

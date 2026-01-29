@@ -509,11 +509,12 @@ export const informantNotificationTestData: {
     actionType: ActionType.DECLARE,
     eventDocument: birthDeclarationEvent
   },
-  {
-    eventType: Event.Birth,
-    actionType: ActionType.REGISTER,
-    eventDocument: birthRegistrationEvent
-  },
+  // Skipping registration notification for now
+  // {
+  //   eventType: Event.Birth,
+  //   actionType: ActionType.REGISTER,
+  //   eventDocument: birthRegistrationEvent
+  // },
   {
     eventType: Event.Birth,
     actionType: ActionType.REJECT,
@@ -529,11 +530,12 @@ export const informantNotificationTestData: {
     actionType: ActionType.DECLARE,
     eventDocument: deathDeclarationEvent
   },
-  {
-    eventType: Event.Death,
-    actionType: ActionType.REGISTER,
-    eventDocument: deathRegistrationEvent
-  },
+  // Skipping registration notification for now
+  // {
+  //   eventType: Event.Death,
+  //   actionType: ActionType.REGISTER,
+  //   eventDocument: deathRegistrationEvent
+  // },
   {
     eventType: Event.Death,
     actionType: ActionType.REJECT,
