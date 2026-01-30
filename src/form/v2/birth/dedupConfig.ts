@@ -13,7 +13,22 @@ import { field, and, or, not } from '@opencrvs/toolkit/events/deduplication'
 const similarNamedChild = field('child.name').fuzzyMatches()
 const childDobWithin5Days = field('child.dob').dateRangeMatches({ days: 5 })
 const similarNamedMother = field('mother.name').fuzzyMatches()
-const similarAgedMother = field('mother.dob').dateRangeMatches({ days: 365 })
+const similarAgedMother = or(
+  field('mother.dob').dateRangeMatches({
+    days: 365
+  }),
+  field('mother.age').dateRangeMatches({
+    days: 365
+  }),
+  field('mother.dob').dateRangeMatches({
+    days: 365,
+    matchAgainst: 'mother.age'
+  }),
+  field('mother.age').dateRangeMatches({
+    days: 365,
+    matchAgainst: 'mother.dob'
+  })
+)
 
 const differentMotherIdTypes = not(field('mother.idType').strictMatches())
 const motherIdNotProvided = field('mother.idType').strictMatches({

@@ -47,6 +47,7 @@ advancedSearch.form.timePeriodLabel,Label for input Time period,Time period,Pér
 advancedSearch.registeredAt,Label for date of registration field,Date of registration,Date d'enregistrement
 advancedSearch.registeredAtLocation,Label for place of registration field,Place of registration,Lieu d'enregistrement
 advancedSearch.registeredAtLocation.helperText,Helper text for place of registration field,"Search for a province, district or registration office","Rechercher une province, un district ou un bureau d'enregistrement"
+advancedSearch.registrationNumber,Label for registration number field,Registration number,Numéro d'enregistrement
 advancedSearch.status,Label for status field,Status of record,Statut de l'enregistrement
 advancedSearch.trackingId,Label for tracking ID field,Tracking ID,ID de suivi
 advancedSearch.updatedAt,Label for date of update field,Time period,Période
@@ -212,6 +213,7 @@ config.emailAllUsers.subtitle,Subtitle for email all users,This email will be se
 config.emailAllUsers.title,Title for email all users,Email all users,Envoyer un e-mail à tous les utilisateurs
 config.userRoles.language,Language name,"{language, select, en {English} fr {French} other {{language}}}","{language, select, en {Anglais} fr {Français} other {{language}}}"
 configuration.dateFormat,Default format for date values,d MMMM y,d MMMM y
+configuration.timeField.outputFormat,Default output format for time fields,hh:mm a,hh:mm a
 configuration.timeFormat,Default time format for timestamps,"MMMM dd, yyyy · hh.mm a","MMMM dd, yyyy · hh.mm a"
 conflicts.modal.assign.description,Description for modal when assign,Please note you will have sole access to this record. Please make any updates promptly otherwise unassign the record.,"Veuillez noter que vous aurez un accès exclusif à cet enregistrement. Veuillez effectuer rapidement les mises à jour éventuelles, sinon vous désassignez l'enregistrement."
 conflicts.modal.assign.title,Title for modal when assign,Assign record?,Attribuer un enregistrement ?
@@ -782,6 +784,7 @@ error.invalidName,This is the error message for invalid name,"Input contains inv
 error.occurred,The error message that displays if we want the user to try the action again,An error occurred. Please try again.,Une erreur s'est produite. Veuillez réessayer.
 error.page.load.failed,Error message when page failed to load,"Sorry, we couldn't load the content for this page","Désolé, nous n'avons pas pu charger le contenu de cette page."
 error.passwordSubmissionError,Error message when password verification fails,Sorry that password did not work,Désolé que le mot de passe n'ait pas fonctionné
+error.pdf,PDF load Error,Failed to load PDF,Échec du chargement du PDF
 error.required.password,New password required,New password is not valid,Le nouveau mot de passe n'est pas valide
 error.search,The error message shown when a search query fails,An error occurred while searching,Une erreur s'est produite lors de la recherche
 error.searchParamCountError,Error message when the search parameters are less than two,You must select a minimum of 2 search criteria,Vous devez sélectionner un minimum de 2 critères de recherche
@@ -825,17 +828,17 @@ event.birth.action.declare.form.section.documents.field.proofOfFather.label,This
 event.birth.action.declare.form.section.documents.field.proofOfMother.label,This is the label for the field,Proof of mother's ID,Identité de la mère
 event.birth.action.declare.form.section.documents.field.proofOther.label,This is the label for the field,Other,Autre
 event.birth.action.declare.form.section.father.field.address.addressSameAs.label,This is the label for the field,Same as mother's usual place of residence?,Identique au lieu de résidence habituel de la mère?
-event.birth.action.declare.form.section.father.field.age.label,This is the label for the field,Age of father,Âge du père
+event.birth.action.declare.form.section.father.field.age.label,This is the label for the field,Age of father (at the time of event),Âge du père (au moment de l'événement)
 event.birth.action.declare.form.section.father.field.name.label,This is the label for the field,Father's name,Nom du père
 event.birth.action.declare.form.section.father.field.reason.label,This is the label for the field,Reason,Raison
-event.birth.action.declare.form.section.informant.field.age.label,This is the label for the field,Age of informant,Âge de l'informateur
+event.birth.action.declare.form.section.informant.field.age.label,This is the label for the field,Age of informant (at the time of event),Âge de l'informateur (au moment de l'événement)
 event.birth.action.declare.form.section.informant.field.email.label,This is the label for the field,Email,E-mail
 event.birth.action.declare.form.section.informant.field.name.label,This is the label for the field,Informant's name,Nom du déclarant
 event.birth.action.declare.form.section.informant.field.other.relation.label,This is the label for the field,Relationship to child,Relation avec l'enfant
 event.birth.action.declare.form.section.informant.field.phoneNo.error,The error message that appears on phone numbers where the first two characters must be a 01 and length must be 11,Must be a valid 10 digit number that starts with 0(7|9),Doit être un nombre valide de  {num} chiffres qui commence par  {start}
 event.birth.action.declare.form.section.informant.field.phoneNo.label,This is the label for the field,Phone number,Numéro de téléphone
 event.birth.action.declare.form.section.informant.field.relation.label,This is the label for the field,Relationship to child,Relation avec l'enfant
-event.birth.action.declare.form.section.mother.field.age.label,This is the label for the field,Age of mother,Âge de la mère
+event.birth.action.declare.form.section.mother.field.age.label,This is the label for the field,Age of mother (at the time of event),Âge de la mère (au moment de l'événement)
 event.birth.action.declare.form.section.mother.field.name.label,This is the label for the field,Mother's name,Nom de la mère
 event.birth.action.declare.form.section.mother.field.previousBirths.label,This is the label for the field,No. of previous births,Nombre de naissances antérieures
 event.birth.action.declare.form.section.mother.field.reason.label,This is the label for the field,Reason,Raison
@@ -939,7 +942,7 @@ event.death.action.declare.form.section.deceased.field.address.label,This is the
 event.death.action.declare.form.section.deceased.field.addressHelper.label,This is the label for the field,Usual place of residence,Lieu de résidence habituel
 event.death.action.declare.form.section.deceased.field.age.checkbox.label,This is the label for the field,Exact date of birth unknown,Date exacte de naissance inconnue
 event.death.action.declare.form.section.deceased.field.age.error,Error message for invalid age,Age must be between 0 and 120,L'auteur doit avoir entre 0 et 120 ans
-event.death.action.declare.form.section.deceased.field.age.label,This is the label for the field,Age of deceased,Âge du défunt
+event.death.action.declare.form.section.deceased.field.age.label,This is the label for the field,Age of deceased (at the time of event),Âge du défunt (au moment de l'événement)
 event.death.action.declare.form.section.deceased.field.age.postfix,This is the postfix for age field,years,ans
 event.death.action.declare.form.section.deceased.field.deathLocation.label,This is the label for the field,Health Institution,Établissement de santé
 event.death.action.declare.form.section.deceased.field.deathLocationOther.label,This is the label for the field,Death location address,Adresse du lieu de décès
@@ -968,7 +971,7 @@ event.death.action.declare.form.section.informant.field.address.addressSameAs.la
 event.death.action.declare.form.section.informant.field.address.label,This is the label for the field,Usual place of residence,Lieu de résidence habituel
 event.death.action.declare.form.section.informant.field.addressHelper.label,This is the label for the field,Usual place of residence,Lieu de résidence habituel
 event.death.action.declare.form.section.informant.field.age.checkbox.label,This is the label for the field,Exact date of birth unknown,Date exacte de naissance inconnue
-event.death.action.declare.form.section.informant.field.age.label,This is the label for the field,Age of informant,Âge de l'informateur
+event.death.action.declare.form.section.informant.field.age.label,This is the label for the field,Age of informant (at the time of event),Âge de l'informateur (au moment de l'événement)
 event.death.action.declare.form.section.informant.field.age.postfix,This is the postfix for age field,years,ans
 event.death.action.declare.form.section.informant.field.brn.label,This is the label for the field,ID Number,Numéro d'identité
 event.death.action.declare.form.section.informant.field.dob.error,This is the error message for invalid date,Must be a valid Birthdate,Doit être une date de naissance valide
@@ -992,7 +995,7 @@ event.death.action.declare.form.section.spouse.field.address.addressSameAs.label
 event.death.action.declare.form.section.spouse.field.address.label,This is the label for the field,Usual place of residence,Lieu de résidence habituel
 event.death.action.declare.form.section.spouse.field.addressHelper.label,This is the label for the field,Usual place of residence,Lieu de résidence habituel
 event.death.action.declare.form.section.spouse.field.age.checkbox.label,This is the label for the field,Exact date of birth unknown,Date exacte de naissance inconnue
-event.death.action.declare.form.section.spouse.field.age.label,This is the label for the field,Age of spouse,Âge du conjoint
+event.death.action.declare.form.section.spouse.field.age.label,This is the label for the field,Age of spouse (at the time of event),Âge du conjoint (au moment de l'événement)
 event.death.action.declare.form.section.spouse.field.age.postfix,This is the postfix for age field,years,ans
 event.death.action.declare.form.section.spouse.field.brn.label,This is the label for the field,ID Number,Numéro d'identité
 event.death.action.declare.form.section.spouse.field.detailsNotAvailable.label,This is the label for the field,Spouse's details are not available,Les informations du conjoint ne sont pas disponibles

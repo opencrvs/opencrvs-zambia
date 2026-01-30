@@ -261,7 +261,7 @@ export const informant = defineFormPage({
         analytics: true,
         required: true,
         label: {
-          defaultMessage: 'Age of informant',
+          defaultMessage: 'Age of informant (at the time of event)',
           description: 'This is the label for the field',
           id: 'event.birth.action.declare.form.section.informant.field.age.label'
         },

@@ -1,9 +1,0 @@
-FROM alpine:3.20
-
-# Directory inside the assets image
-WORKDIR /assets
-
-# Copy assets
-COPY infrastructure/metabase /assets/
-
-RUN chmod +x /assets/*.sh
