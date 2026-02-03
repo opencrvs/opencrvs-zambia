@@ -16,7 +16,8 @@ import {
   deepMerge,
   aggregateActionDeclarations,
   EventDocument,
-  getPendingAction
+  getPendingAction,
+  NameFieldValue
 } from '@opencrvs/toolkit/events'
 import { GATEWAY_URL, MOSIP_INTEROP_URL } from '@countryconfig/constants'
 import { v4 as uuidv4 } from 'uuid'
@@ -168,6 +169,18 @@ async function requestRejection(
   return event
 }
 
+function handleDeferredRejection(
+  token: string,
+  eventId: string,
+  actionId: string,
+  reason?: string
+) {
+  process.nextTick(async () => {
+    await rejectRequestedRegistration(token, eventId, actionId)
+    await requestRejection(token, eventId, actionId, reason)
+  })
+}
+
 export async function onMosipBirthRegisterHandler(
   request: ActionConfirmationRequest,
   h: Hapi.ResponseToolkit
@@ -185,8 +198,7 @@ export async function onMosipBirthRegisterHandler(
   // await sendInformantNotification({ event, token, registrationNumber })
 
   if (!valid) {
-    await rejectRequestedRegistration(token, event.id, pendingAction.id)
-    await requestRejection(token, event.id, pendingAction.id, reason)
+    handleDeferredRejection(token, event.id, pendingAction.id, reason)
     return h.response().code(202)
   }
 
@@ -204,11 +216,19 @@ export async function onMosipBirthRegisterHandler(
       MOSIP_INTEROP_URL,
       `Bearer ${token}`
     )
+
+    const childName = declaration['child.name'] as NameFieldValue | undefined
     mosipInteropClient.register({
       trackingId: event.trackingId,
       requestFields: {
         birthCertificateNumber: registrationNumber,
-        fullName: declaration['child.name'],
+        fullName: [
+          childName?.firstname,
+          childName?.middlename,
+          childName?.surname
+        ]
+          .filter(Boolean)
+          .join(' '),
         dateOfBirth: declaration['child.dob'],
         gender: declaration['child.gender']
       },
@@ -224,12 +244,13 @@ export async function onMosipBirthRegisterHandler(
     return h.response().code(202)
   } catch (error) {
     logger.error(error)
-
-    return h
-      .response({
-        reason: 'Unexpected error in OpenCRVS-MOSIP interoperability layer'
-      })
-      .code(400)
+    handleDeferredRejection(
+      token,
+      event.id,
+      pendingAction.id,
+      'Unexpected error in OpenCRVS-MOSIP interoperability layer'
+    )
+    return h.response().code(202)
   }
 }
 
@@ -250,8 +271,7 @@ export async function onMosipDeathRegisterHandler(
   // await sendInformantNotification({ event, token, registrationNumber })
 
   if (!valid) {
-    await rejectRequestedRegistration(token, event.id, pendingAction.id)
-    await requestRejection(token, event.id, pendingAction.id, reason)
+    handleDeferredRejection(token, event.id, pendingAction.id, reason)
     return h.response().code(202)
   }
 
@@ -270,13 +290,24 @@ export async function onMosipDeathRegisterHandler(
       `Bearer ${token}`
     )
 
+    const deceasedName = declaration['deceased.name'] as
+      | NameFieldValue
+      | undefined
+
     mosipInteropClient.register({
       trackingId: event.trackingId,
       requestFields: {
         deathCertificateNumber: registrationNumber,
-        fullName: declaration['deceased.name'],
+        fullName: [
+          deceasedName?.firstname,
+          deceasedName?.middlename,
+          deceasedName?.surname
+        ]
+          .filter(Boolean)
+          .join(' '),
         dateOfBirth: declaration['deceased.dob'],
-        gender: declaration['deceased.gender']
+        gender: declaration['deceased.gender'],
+        nationalIdNumber: declaration['deceased.nid']
       },
       notification: {
         recipientEmail: declaration['informant.email'] as string,
@@ -290,11 +321,12 @@ export async function onMosipDeathRegisterHandler(
     return h.response().code(202)
   } catch (error) {
     logger.error(error)
-
-    return h
-      .response({
-        reason: 'Unexpected error in OpenCRVS-MOSIP interoperability layer'
-      })
-      .code(400)
+    handleDeferredRejection(
+      token,
+      event.id,
+      pendingAction.id,
+      'Unexpected error in OpenCRVS-MOSIP interoperability layer'
+    )
+    return h.response().code(202)
   }
 }
