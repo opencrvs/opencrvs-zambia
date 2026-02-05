@@ -11,7 +11,7 @@ services:
   # Note: these published port will override UFW rules as Docker manages it's own iptables
   # Only publish the exact ports that are required for OpenCRVS to work
   traefik:
-    image: 'traefik:v2.10'
+    image: 'traefik:v2.11'
     ports:
       - target: 80
         published: 80

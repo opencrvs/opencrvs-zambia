@@ -1,0 +1,26 @@
+- name: Verify LUKS disk encryption key
+  when: disk_encryption_key is defined
+  block:
+    - name: Backup LUKS header
+      shell: |
+        loop_device=$(losetup -j /cryptfs_file_sparse.img | cut -d: -f1)
+        rm -vf /tmp/luks-header.img
+        cryptsetup luksHeaderBackup $loop_device --header-backup-file /tmp/luks-header.img
+
+    - name: Test disk encryption key for LUKS header
+      when: disk_encryption_key is defined
+      shell: 'echo "{{ disk_encryption_key }}" | cryptsetup -d - luksOpen /tmp/luks-header.img test --test-passphrase'
+      register: luks_test
+
+    - name: Display success message
+      debug:
+        msg: "✓ LUKS passphrase test successful - the disk encryption key is valid: {{ luks_test.stdout }}"
+  rescue:
+    - name: DO NOT REBOOT the SERVER
+      fail:
+        msg: |
+          {% if luks_test.rc == 2 and 'No key available with this passphrase' in luks_test.stderr -%}
+          LUKS passphrase test failed: Please make sure your key in GitHub secret is correct. Otherwise system will not be able to decrypt /data. MAKE SURE DATA BACKUP IS RESTORABLE BEFORE SERVER REBOOT.
+          {%- else -%}
+          cryptsetup error (RC: {{ luks_test.rc }}) - {{ luks_test.stderr | default('Unknown error') }}
+          {%- endif %}

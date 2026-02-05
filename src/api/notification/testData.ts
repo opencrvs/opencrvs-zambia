@@ -137,9 +137,7 @@ const RequestBirthNotificationAction = {
     'mother.address': {
       country: 'FAR',
       addressType: 'DOMESTIC',
-      province: '05cbe3a1-9020-47bd-b558-807607c2f119',
-      district: 'afaead2b-7ef5-4adb-b4bf-3d2b8437c284',
-      urbanOrRural: 'URBAN'
+      administrativeArea: 'afaead2b-7ef5-4adb-b4bf-3d2b8437c284'
     },
     'informant.email': 'rouge@portgas.com',
     'informant.phoneNo': '0734231245',
@@ -175,9 +173,7 @@ const RequestBirthDeclarationAction = {
     'mother.address': {
       country: 'FAR',
       addressType: 'DOMESTIC',
-      province: '05cbe3a1-9020-47bd-b558-807607c2f119',
-      district: 'afaead2b-7ef5-4adb-b4bf-3d2b8437c284',
-      urbanOrRural: 'URBAN'
+      administrativeArea: 'afaead2b-7ef5-4adb-b4bf-3d2b8437c284'
     },
     'informant.email': 'rouge@portgas.com',
     'informant.phoneNo': '0734231245',
@@ -213,9 +209,7 @@ const BirthDeclarationAction = {
     'mother.address': {
       country: 'FAR',
       addressType: 'DOMESTIC',
-      province: '05cbe3a1-9020-47bd-b558-807607c2f119',
-      district: 'afaead2b-7ef5-4adb-b4bf-3d2b8437c284',
-      urbanOrRural: 'URBAN'
+      administrativeArea: 'afaead2b-7ef5-4adb-b4bf-3d2b8437c284'
     },
     'informant.email': 'rouge@portgas.com',
     'informant.phoneNo': '0734231245',
@@ -284,9 +278,7 @@ const RequestDeathNotificationAction = {
     'deceased.address': {
       country: 'FAR',
       addressType: 'DOMESTIC',
-      province: '05cbe3a1-9020-47bd-b558-807607c2f119',
-      district: 'afaead2b-7ef5-4adb-b4bf-3d2b8437c284',
-      urbanOrRural: 'URBAN'
+      administrativeArea: 'afaead2b-7ef5-4adb-b4bf-3d2b8437c284'
     },
     'informant.relation': 'SPOUSE'
   },
@@ -311,13 +303,13 @@ const RequestDeathDeclarationAction = {
   createdByRole: 'LOCAL_REGISTRAR',
   createdAtLocation: '9e069dda-0d83-4f67-a4f2-9adbf5658e2e' as unknown as UUID,
   declaration: {
-    'spouse.age': { age: '41', asOfDateRef: 'eventDetails.date' },
+    'spouse.age': { age: 41, asOfDateRef: 'eventDetails.date' },
     'spouse.name': {
       firstname: 'Toki',
       surname: 'Kozuki',
       middlename: ''
     },
-    'deceased.age': { age: '31', asOfDateRef: 'eventDetails.date' },
+    'deceased.age': { age: 31, asOfDateRef: 'eventDetails.date' },
     'deceased.name': {
       firstname: 'Oden',
       surname: 'Kozuki',
@@ -332,9 +324,7 @@ const RequestDeathDeclarationAction = {
     'deceased.address': {
       country: 'FAR',
       addressType: 'DOMESTIC',
-      province: '05cbe3a1-9020-47bd-b558-807607c2f119',
-      district: 'afaead2b-7ef5-4adb-b4bf-3d2b8437c284',
-      urbanOrRural: 'URBAN'
+      administrativeArea: 'afaead2b-7ef5-4adb-b4bf-3d2b8437c284'
     },
     'eventDetails.date': '2025-08-19',
     'spouse.dobUnknown': true,
@@ -367,13 +357,13 @@ const DeathDeclarationAction = {
   createdByRole: 'LOCAL_REGISTRAR',
   createdAtLocation: '9e069dda-0d83-4f67-a4f2-9adbf5658e2e' as unknown as UUID,
   declaration: {
-    'spouse.age': { age: '41', asOfDateRef: 'eventDetails.date' },
+    'spouse.age': { age: 41, asOfDateRef: 'eventDetails.date' },
     'spouse.name': {
       firstname: 'Toki',
       surname: 'Kozuki',
       middlename: ''
     },
-    'deceased.age': { age: '31', asOfDateRef: 'eventDetails.date' },
+    'deceased.age': { age: 31, asOfDateRef: 'eventDetails.date' },
     'deceased.name': {
       firstname: 'Oden',
       surname: 'Kozuki',
@@ -388,9 +378,7 @@ const DeathDeclarationAction = {
     'deceased.address': {
       country: 'FAR',
       addressType: 'DOMESTIC',
-      province: '05cbe3a1-9020-47bd-b558-807607c2f119',
-      district: 'afaead2b-7ef5-4adb-b4bf-3d2b8437c284',
-      urbanOrRural: 'URBAN'
+      administrativeArea: 'afaead2b-7ef5-4adb-b4bf-3d2b8437c284'
     },
     'eventDetails.date': '2025-08-19',
     'spouse.dobUnknown': true,
@@ -521,11 +509,12 @@ export const informantNotificationTestData: {
     actionType: ActionType.DECLARE,
     eventDocument: birthDeclarationEvent
   },
-  {
-    eventType: Event.Birth,
-    actionType: ActionType.REGISTER,
-    eventDocument: birthRegistrationEvent
-  },
+  // Skipping registration notification for now
+  // {
+  //   eventType: Event.Birth,
+  //   actionType: ActionType.REGISTER,
+  //   eventDocument: birthRegistrationEvent
+  // },
   {
     eventType: Event.Birth,
     actionType: ActionType.REJECT,
@@ -541,11 +530,12 @@ export const informantNotificationTestData: {
     actionType: ActionType.DECLARE,
     eventDocument: deathDeclarationEvent
   },
-  {
-    eventType: Event.Death,
-    actionType: ActionType.REGISTER,
-    eventDocument: deathRegistrationEvent
-  },
+  // Skipping registration notification for now
+  // {
+  //   eventType: Event.Death,
+  //   actionType: ActionType.REGISTER,
+  //   eventDocument: deathRegistrationEvent
+  // },
   {
     eventType: Event.Death,
     actionType: ActionType.REJECT,

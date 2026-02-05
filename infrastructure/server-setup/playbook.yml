@@ -115,6 +115,16 @@
         - data-partition
 
     - include_tasks:
+        file: tasks/validate-data-partition.yml
+        apply:
+          tags:
+            - data-partition
+            - decrypt-on-boot
+      tags:
+        - data-partition
+        - decrypt-on-boot
+
+    - include_tasks:
         file: tasks/swap.yml
         apply:
           tags:

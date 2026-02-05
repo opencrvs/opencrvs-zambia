@@ -21,7 +21,11 @@ import {
   field,
   event,
   user,
-  or
+  or,
+  not,
+  defineConditional,
+  never,
+  now
 } from '@opencrvs/toolkit/events'
 import { Event } from './types/types'
 import { MAX_NAME_LENGTH } from './v2/birth/validators'
@@ -56,6 +60,23 @@ const TENNIS_CLUB_DECLARATION_REVIEW = {
         defaultMessage: 'Draw signature',
         description: 'Title for the modal to draw signature'
       }
+    },
+    {
+      type: FieldType.ALPHA_PRINT_BUTTON,
+      id: 'review.print',
+      label: {
+        defaultMessage: 'Print declaration',
+        description: 'Print',
+        id: 'event.tennis-club-membership.action.declare.form.review.print.label'
+      },
+      configuration: {
+        template: 'v2.tennis-club-membership-certified-certificate',
+        buttonLabel: {
+          defaultMessage: 'Print declaration summary',
+          description: "Print button's label",
+          id: 'event.tennis-club-membership.action.declare.form.review.print.button.label'
+        }
+      }
     }
   ]
 }
@@ -86,6 +107,11 @@ const TENNIS_CLUB_DECLARATION_FORM = defineDeclarationForm({
           },
           hideLabel: true,
           required: true,
+          defaultValue: {
+            firstname: user('firstname'),
+            middlename: user('middlename'),
+            surname: user('surname')
+          },
           validation: [
             {
               validator: field('applicant.name').object({
@@ -110,10 +136,87 @@ const TENNIS_CLUB_DECLARATION_FORM = defineDeclarationForm({
           }
         },
         {
+          id: 'applicant.registrationDuration',
+          analytics: true,
+          type: FieldType.NUMBER_WITH_UNIT,
+          label: {
+            defaultMessage: 'Registration duration',
+            description: 'This is the label for the field',
+            id: 'event.tennis-club.registrationDuration.label'
+          },
+          placeholder: {
+            defaultMessage: 'Time Unit',
+            description: 'This is the placeholder for the field',
+            id: 'event.tennis-club.registrationDuration.placeholder'
+          },
+          options: [
+            {
+              value: 'Days',
+              label: {
+                id: 'unit.days',
+                defaultMessage: 'Days',
+                description: 'Days'
+              }
+            },
+            {
+              value: 'Hours',
+              label: {
+                id: 'unit.hours',
+                defaultMessage: 'Hours',
+                description: 'Hours'
+              }
+            },
+            {
+              value: 'Minutes',
+              label: {
+                id: 'unit.minutes',
+                defaultMessage: 'Minutes',
+                description: 'Minutes'
+              }
+            }
+          ],
+          configuration: {
+            min: 0,
+            numberFieldPlaceholder: {
+              defaultMessage: 'Interval',
+              description: 'This is the placeholder for the field',
+              id: 'event.birth.action.declare.form.section.child.field.birthDuration.placeholder'
+            }
+          },
+          validation: [
+            {
+              message: {
+                defaultMessage: 'Number and unit required',
+                description: 'This is the error message for invalid duration',
+                id: 'event.birth.action.declare.form.section.child.field.birthDuration.error'
+              },
+              validator: or(
+                and(
+                  field('applicant.registrationDuration')
+                    .get('numericValue')
+                    .isFalsy(),
+                  field('applicant.registrationDuration').get('unit').isFalsy()
+                ),
+                not(
+                  or(
+                    field('applicant.registrationDuration')
+                      .get('numericValue')
+                      .isFalsy(),
+                    field('applicant.registrationDuration')
+                      .get('unit')
+                      .isFalsy()
+                  )
+                )
+              )
+            }
+          ]
+        },
+        {
           id: 'applicant.dob',
           type: FieldType.DATE,
           required: true,
           analytics: true,
+          defaultValue: now(),
           validation: [
             {
               message: {
@@ -128,6 +231,20 @@ const TENNIS_CLUB_DECLARATION_FORM = defineDeclarationForm({
             defaultMessage: "Applicant's date of birth",
             description: 'This is the label for the field',
             id: 'event.tennis-club-membership.action.declare.form.section.who.field.dob.label'
+          }
+        },
+        {
+          id: 'applicant.tob',
+          type: FieldType.TIME,
+          required: false,
+          defaultValue: now(),
+          configuration: {
+            use12HourFormat: true
+          },
+          label: {
+            defaultMessage: "Applicant's time of birth",
+            description: 'This is the label for the time of birth field',
+            id: 'event.tennis-club-membership.action.declare.form.section.who.field.tob.label'
           }
         },
         {
@@ -221,10 +338,89 @@ const TENNIS_CLUB_DECLARATION_FORM = defineDeclarationForm({
           }
         },
         {
+          id: 'recommender.search',
+          type: FieldType.SEARCH,
+          label: {
+            defaultMessage: 'Registration Number of recommender',
+            description: 'This is the label for the field',
+            id: 'event.tennis-club-membership.action.declare.form.section.recommender.field.search.label'
+          },
+          configuration: {
+            query: {
+              type: 'or',
+              clauses: [
+                {
+                  'legalStatuses.REGISTERED.registrationNumber': {
+                    term: '{term}',
+                    type: 'exact'
+                  }
+                }
+              ]
+            },
+            limit: 10,
+            offset: 0,
+            validation: {
+              validator: defineConditional({
+                type: 'string',
+                pattern: '^[A-Za-z0-9]{12}$',
+                description: 'Must be alpha-numeric and 12 characters long'
+              }),
+              message: {
+                defaultMessage:
+                  'Invalid value: Must be alpha-numeric and 12 characters long',
+                description: 'Error message for invalid value',
+                id: 'tennis-club-membership.searchField.validation.invalid'
+              }
+            },
+            indicators: {
+              ok: {
+                defaultMessage: 'Recommender found',
+                description: 'OK button text',
+                id: 'tennis-club-membership.searchField.indicators.ok'
+              },
+              clearModal: {
+                title: {
+                  defaultMessage: 'Clear recommender?',
+                  description: 'Title for the clear confirmation modal',
+                  id: 'tennis-club-membership.searchField.indicators.clearModal.title'
+                },
+                description: {
+                  defaultMessage:
+                    'This will remove the details of the current recommender.',
+                  description: 'Description for the clear confirmation modal',
+                  id: 'tennis-club-membership.searchField.indicators.clearModal.description'
+                }
+              }
+            }
+          },
+          conditionals: [
+            {
+              type: ConditionalType.SHOW,
+              conditional: field('recommender.none').isFalsy()
+            },
+            {
+              type: ConditionalType.DISPLAY_ON_REVIEW,
+              conditional: never()
+            }
+          ]
+        },
+        {
           id: 'recommender.name',
           configuration: { maxLength: MAX_NAME_LENGTH },
           type: FieldType.NAME,
           required: true,
+          parent: field('recommender.search'),
+          defaultValue: {
+            firstname: user('firstname'),
+            middlename: user('middlename'),
+            surname: user('surname')
+          },
+          value: field('recommender.search').getByPath([
+            'data',
+            'firstResult',
+            'declaration',
+            'applicant.name'
+          ]),
           conditionals: [
             {
               type: ConditionalType.SHOW,
@@ -239,9 +435,62 @@ const TENNIS_CLUB_DECLARATION_FORM = defineDeclarationForm({
           }
         },
         {
+          id: 'recommender.device',
+          type: 'TEXT',
+          required: true,
+          defaultValue: user('device'),
+          conditionals: [
+            {
+              type: ConditionalType.SHOW,
+              conditional: field('recommender.none').isFalsy()
+            }
+          ],
+          label: {
+            defaultMessage: "Recommender's device",
+            description: 'This is the label for the field',
+            id: 'event.tennis-club-membership.action.declare.form.section.recommender.device'
+          }
+        },
+        {
+          id: 'recommender.fullHonorificName',
+          type: 'TEXT',
+          defaultValue: user('fullHonorificName'),
+          conditionals: [
+            {
+              type: ConditionalType.SHOW,
+              conditional: field('recommender.none').isFalsy()
+            }
+          ],
+          label: {
+            defaultMessage: 'Recommender full honorific name',
+            description: 'This is the label for the field',
+            id: 'event.tennis-club-membership.action.declare.form.section.recommender2.fullHonorificName'
+          }
+        },
+        {
+          id: 'recommender.role',
+          type: 'TEXT',
+          defaultValue: user('role'),
+          conditionals: [
+            {
+              type: ConditionalType.SHOW,
+              conditional: field('recommender.none').isFalsy()
+            }
+          ],
+          label: {
+            defaultMessage: 'Recommender role',
+            description: 'This is the label for the field',
+            id: 'event.tennis-club-membership.action.declare.form.section.recommender.role'
+          }
+        },
+        {
           id: 'recommender.id',
           type: 'TEXT',
           required: true,
+          parent: field('recommender.search'),
+          value: field('recommender.search').get(
+            'data.firstResult.legalStatuses.REGISTERED.registrationNumber'
+          ),
           conditionals: [
             {
               type: ConditionalType.SHOW,
@@ -252,6 +501,66 @@ const TENNIS_CLUB_DECLARATION_FORM = defineDeclarationForm({
             defaultMessage: "Recommender's membership ID",
             description: 'This is the label for the field',
             id: 'event.tennis-club-membership.action.declare.form.section.recommender.field.id.label'
+          }
+        },
+        {
+          id: 'recommender2.id',
+          type: 'TEXT',
+          conditionals: [
+            {
+              type: ConditionalType.SHOW,
+              conditional: field('recommender.none').isFalsy()
+            }
+          ],
+          label: {
+            defaultMessage: "2nd recommender's membership ID",
+            description: 'This is the label for the field',
+            id: 'event.tennis-club-membership.action.declare.form.section.recommender2.field.id.label'
+          }
+        },
+        {
+          id: 'recommender3.id',
+          type: 'TEXT',
+          conditionals: [
+            {
+              type: ConditionalType.SHOW,
+              conditional: field('recommender.none').isFalsy()
+            }
+          ],
+          label: {
+            defaultMessage: "3rd recommender's membership ID",
+            description: 'This is the label for the field',
+            id: 'event.tennis-club-membership.action.declare.form.section.recommender3.field.id.label'
+          }
+        },
+        {
+          id: 'recommender4.id',
+          type: 'TEXT',
+          conditionals: [
+            {
+              type: ConditionalType.SHOW,
+              conditional: field('recommender.none').isFalsy()
+            }
+          ],
+          label: {
+            defaultMessage: "4th recommender's membership ID",
+            description: 'This is the label for the field',
+            id: 'event.tennis-club-membership.action.declare.form.section.recommender4.field.id.label'
+          }
+        },
+        {
+          id: 'recommender5.id',
+          type: 'TEXT',
+          conditionals: [
+            {
+              type: ConditionalType.SHOW,
+              conditional: field('recommender.none').isFalsy()
+            }
+          ],
+          label: {
+            defaultMessage: "5th recommender's membership ID",
+            description: 'This is the label for the field',
+            id: 'event.tennis-club-membership.action.declare.form.section.recommender5.field.id.label'
           }
         }
       ]
@@ -565,11 +874,7 @@ const TENNIS_CLUB_MEMBERSHIP_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
               description: 'Subtitle for the data section',
               id: 'event.tennis-club-membership.action.certificate.form.section.verifyIdentity.data.subtitle'
             },
-            data: [
-              { fieldId: 'applicant.name.firstname' },
-              { fieldId: 'applicant.name.surname' },
-              { fieldId: 'applicant.dob' }
-            ]
+            data: [{ fieldId: 'applicant.name' }, { fieldId: 'applicant.dob' }]
           }
         }
       ],
@@ -999,6 +1304,7 @@ export const tennisClubMembershipEvent = defineConfig({
         id: 'advancedSearch.form.registrationDetails'
       },
       fields: [
+        event('legalStatuses.REGISTERED.registrationNumber').exact(),
         event('legalStatuses.REGISTERED.createdAtLocation').within(),
         event('legalStatuses.REGISTERED.acceptedAt').range(),
         event('status').exact(),
@@ -1025,7 +1331,29 @@ export const tennisClubMembershipEvent = defineConfig({
         description: 'Recommender details search field section title',
         id: 'event.tennis-club-membership.search.recommender'
       },
-      fields: [field('recommender.name').fuzzy()]
+      fields: [
+        field('recommender.name').fuzzy(),
+        {
+          fieldId: 'recommender.id',
+          fieldType: 'field',
+          type: FieldType.TEXT,
+          config: {
+            type: 'fuzzy',
+            searchFields: [
+              'recommender.id',
+              'recommender2.id',
+              'recommender3.id',
+              'recommender4.id',
+              'recommender5.id'
+            ]
+          },
+          label: {
+            defaultMessage: "Recommender's Id",
+            description: 'Recommender id search field title',
+            id: 'event.tennis-club-membership.search.recommender.id'
+          }
+        }
+      ]
     }
   ]
 })

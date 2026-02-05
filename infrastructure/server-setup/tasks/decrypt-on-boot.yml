@@ -1,4 +1,39 @@
-- name: Save disk encryption key into a file as an example (in production use a hardware security module)
+- name: Ensure 'cryptsetup' utility is installed
+  ansible.builtin.package:
+    name: cryptsetup
+    state: present
+  when: disk_encryption_key is defined
+
+- name: 'Register encrypted file system'
+  stat:
+    path: /cryptfs_file_sparse.img
+    get_checksum: False
+  register: encryptedFileSystemPostCheck
+  when: disk_encryption_key is defined
+
+- name: Check if Disk encryption key file exists
+  ansible.builtin.stat:
+    path: /root/disk-encryption-key.txt
+  register: encryption_keyfile_stat
+  when: disk_encryption_key is defined
+
+- name: Read existing Disk encryption key
+  ansible.builtin.slurp:
+    src: /root/disk-encryption-key.txt
+  register: existing_disk_encryption_key
+  when:
+    - disk_encryption_key is defined
+    - encryption_keyfile_stat.stat.exists
+
+- name: Fail if key exists and differs
+  ansible.builtin.fail:
+    msg: "Disk encryption key on disk does not match ansible variable! GitHub secret ENCRYPTION_KEY was updated!"
+  when:
+    - disk_encryption_key is defined
+    - encryption_keyfile_stat.stat.exists
+    - existing_disk_encryption_key['content'] | b64decode != ("DISK_ENCRYPTION_KEY=" ~ disk_encryption_key ~ "\n")
+
+- name: Save disk encryption key into a file
   when: disk_encryption_key is defined
   ansible.builtin.copy:
     dest: /root/disk-encryption-key.txt
@@ -7,6 +42,23 @@
     mode: g+rwx
     content: |
       DISK_ENCRYPTION_KEY={{ disk_encryption_key }}
+
+- name: Ensure destination directory exists
+  ansible.builtin.file:
+    path: /opt/opencrvs/scripts/cryptfs
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+    recurse: yes
+
+- name: Install k8s-help script
+  copy:
+    src: ../cryptfs/decrypt.sh
+    dest: "/opt/opencrvs/scripts/cryptfs/decrypt.sh"
+    owner: "{{ ansible_user }}"
+    group: 'application'
+    mode: '0755'
 
 - name: Copy reboot.service systemd file. Must decrypt disk on reboot
   ansible.builtin.copy:
@@ -28,7 +80,6 @@
    - encryptedFileSystemPostCheck.stat.exists
 
 - name: 'Setup systemd to mount encrypted folder'
-  when: disk_encryption_key is defined
   shell: systemctl daemon-reload && systemctl enable reboot.service
   when:
     - disk_encryption_key is defined

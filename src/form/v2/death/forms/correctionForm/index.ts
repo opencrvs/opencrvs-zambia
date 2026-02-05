@@ -20,6 +20,7 @@ export const DEATH_CORRECTION_FORM = defineActionForm({
     {
       id: 'details',
       type: PageTypes.enum.FORM,
+      requireCompletionToContinue: true,
       title: {
         id: 'event.death.action.correction.form.section.details.title',
         defaultMessage: 'Correction details',
@@ -119,6 +120,7 @@ export const DEATH_CORRECTION_FORM = defineActionForm({
     {
       id: 'requester.identity.verify',
       type: PageTypes.enum.VERIFICATION,
+      requireCompletionToContinue: true,
       title: {
         id: 'event.death.action.correction.form.section.requester.identity.verify.title',
         defaultMessage: 'Verify ID',
@@ -165,6 +167,7 @@ export const DEATH_CORRECTION_FORM = defineActionForm({
     {
       id: 'documents',
       type: PageTypes.enum.FORM,
+      requireCompletionToContinue: true,
       title: {
         id: 'event.death.action.correction.form.section.supporting-documents.title',
         defaultMessage: 'Upload supporting documents',
@@ -211,6 +214,7 @@ export const DEATH_CORRECTION_FORM = defineActionForm({
     {
       id: 'fees',
       type: PageTypes.enum.FORM,
+      requireCompletionToContinue: true,
       title: {
         id: 'event.death.action.correction.form.section.fees.title',
         defaultMessage: 'Collect fees',

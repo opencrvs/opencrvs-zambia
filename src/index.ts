@@ -61,7 +61,6 @@ import {
   onBirthActionHandler,
   onDeathActionHandler
 } from '@countryconfig/api/custom-event/handler'
-import { readFileSync } from 'fs'
 import {
   ActionDocument,
   ActionStatus,
@@ -71,8 +70,7 @@ import {
 import { Event } from './form/types/types'
 import {
   onMosipBirthRegisterHandler,
-  onMosipDeathRegisterHandler,
-  onRegisterHandler
+  onMosipDeathRegisterHandler
 } from './api/registration'
 import { workqueueconfigHandler } from './api/workqueue/handler'
 import getUserNotificationRoutes from './config/routes/userNotificationRoutes'

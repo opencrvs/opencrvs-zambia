@@ -8,7 +8,9 @@
 #
 # Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
 
-#!/bin/bash
+SCRIPT_FULL_PATH=$(readlink -f $0)
+SCRIPT_DIR=$(dirname "$SCRIPT_FULL_PATH")
+echo "Running Metabase initialization script from ${SCRIPT_DIR}"
 
 if [ -z "${OPENCRVS_METABASE_SITE_NAME}" ]; then
   echo "Error: OPENCRVS_METABASE_SITE_NAME environment variable is not defined"
@@ -106,8 +108,8 @@ export OPENCRVS_METABASE_ADMIN_PASSWORD_SALT=$(uuidgen)
 SALT_AND_PASSWORD=$OPENCRVS_METABASE_ADMIN_PASSWORD_SALT$OPENCRVS_METABASE_ADMIN_PASSWORD
 export OPENCRVS_METABASE_ADMIN_PASSWORD_HASH=$(java -cp $METABASE_JAR clojure.main -e "(require 'metabase.util.password) (println (metabase.util.password/hash-bcrypt \"$SALT_AND_PASSWORD\"))" 2>/dev/null | tail -n 1)
 
-source /initialize-database.sh
-source /update-database.sh
+source ${SCRIPT_DIR}/initialize-database.sh
+source ${SCRIPT_DIR}/update-database.sh
 
 echo "Starting metabase..."
 

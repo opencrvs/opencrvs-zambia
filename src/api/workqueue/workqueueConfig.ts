@@ -233,7 +233,10 @@ export const Workqueues = defineWorkqueues([
             terms: ['DECLARED', 'VALIDATED']
           },
           flags: {
-            noneOf: [InherentFlags.REJECTED]
+            noneOf: [
+              InherentFlags.REJECTED,
+              `${ActionType.REGISTER}:${ActionStatus.Rejected}`.toLowerCase()
+            ]
           },
           updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
         },
@@ -306,10 +309,14 @@ export const Workqueues = defineWorkqueues([
     },
     query: {
       flags: {
-        anyOf: [InherentFlags.REJECTED]
+        anyOf: [
+          InherentFlags.REJECTED,
+          `${ActionType.REGISTER}:${ActionStatus.Rejected}`.toLowerCase()
+        ]
       },
       updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
     },
+
     actions: [
       {
         type: 'DEFAULT',

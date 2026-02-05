@@ -1,0 +1,11 @@
+FROM alpine:3.20
+
+# Directory inside the assets image
+WORKDIR /assets
+
+# Copy assets
+COPY infrastructure/metabase /assets/metabase
+COPY infrastructure/postgres /assets/postgres
+
+RUN chmod +x /assets/metabase/*.sh \
+             /assets/postgres/*.sh

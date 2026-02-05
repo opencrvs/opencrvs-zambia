@@ -28,8 +28,8 @@ import { applicationConfig } from '@countryconfig/api/application/application-co
 
 import { createSelectOptions, emptyMessage } from '@countryconfig/form/v2/utils'
 import {
-  invalidNameValidator,
-  MAX_NAME_LENGTH
+  farajalandNameConfig,
+  invalidNameValidator
 } from '@countryconfig/form/v2/birth/validators'
 import {
   defaultStreetAddressConfiguration,
@@ -213,7 +213,7 @@ export const child = defineFormPage({
       id: 'child.name',
       type: FieldType.NAME,
       required: true,
-      configuration: { maxLength: MAX_NAME_LENGTH },
+      configuration: farajalandNameConfig,
       hideLabel: true,
       label: {
         defaultMessage: "Child's name",
@@ -322,6 +322,7 @@ export const child = defineFormPage({
       id: 'child.birthLocation.privateHome',
       analytics: true,
       type: FieldType.ADDRESS,
+      required: true,
       secured: true,
       hideLabel: true,
       label: {
@@ -365,6 +366,7 @@ export const child = defineFormPage({
     {
       id: 'child.birthLocation.other',
       type: FieldType.ADDRESS,
+      required: true,
       analytics: true,
 
       secured: true,

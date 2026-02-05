@@ -16,8 +16,8 @@ import {
   FieldType
 } from '@opencrvs/toolkit/events'
 import {
+  farajalandNameConfig,
   invalidNameValidator,
-  MAX_NAME_LENGTH,
   nationalIdValidator
 } from '@countryconfig/form/v2/birth/validators'
 
@@ -281,7 +281,7 @@ export const printCertificateCollectorOther: FieldConfig[] = [
     id: 'collector.OTHER.name',
     type: FieldType.NAME,
     required: true,
-    configuration: { maxLength: MAX_NAME_LENGTH },
+    configuration: farajalandNameConfig,
     hideLabel: true,
     label: {
       defaultMessage: "Collector's name",

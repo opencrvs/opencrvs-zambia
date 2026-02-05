@@ -24,8 +24,8 @@ import { not, never } from '@opencrvs/toolkit/conditionals'
 
 import { createSelectOptions, emptyMessage } from '@countryconfig/form/v2/utils'
 import {
+  farajalandNameConfig,
   invalidNameValidator,
-  MAX_NAME_LENGTH,
   nationalIdValidator
 } from '@countryconfig/form/v2/birth/validators'
 import {
@@ -85,7 +85,7 @@ export const deceased = defineFormPage({
       {
         id: 'deceased.name',
         type: FieldType.NAME,
-        configuration: { maxLength: MAX_NAME_LENGTH },
+        configuration: farajalandNameConfig,
         required: true,
         hideLabel: true,
         label: {
@@ -187,7 +187,7 @@ export const deceased = defineFormPage({
         type: FieldType.AGE,
         required: true,
         label: {
-          defaultMessage: `Age of deceased`,
+          defaultMessage: `Age of deceased (at the time of event)`,
           description: 'This is the label for the field',
           id: 'event.death.action.declare.form.section.deceased.field.age.label'
         },
@@ -373,6 +373,7 @@ export const deceased = defineFormPage({
     {
       id: `deceased.address`,
       type: FieldType.ADDRESS,
+      required: true,
       hideLabel: true,
       secured: true,
       label: {

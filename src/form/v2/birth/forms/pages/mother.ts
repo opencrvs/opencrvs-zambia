@@ -24,7 +24,7 @@ import { emptyMessage } from '@countryconfig/form/v2/utils'
 import {
   invalidNameValidator,
   nationalIdValidator,
-  MAX_NAME_LENGTH
+  farajalandNameConfig
 } from '@countryconfig/form/v2/birth/validators'
 import { InformantType } from './informant'
 import { IdType, idTypeOptions } from '../../../person'
@@ -122,7 +122,7 @@ export const mother = defineFormPage({
         id: 'mother.name',
         type: FieldType.NAME,
         required: true,
-        configuration: { maxLength: MAX_NAME_LENGTH },
+        configuration: farajalandNameConfig,
         hideLabel: true,
         label: {
           defaultMessage: "Mother's name",
@@ -220,7 +220,7 @@ export const mother = defineFormPage({
         required: true,
         analytics: true,
         label: {
-          defaultMessage: 'Age of mother',
+          defaultMessage: 'Age of mother (at the time of event)',
           description: 'This is the label for the field',
           id: 'event.birth.action.declare.form.section.mother.field.age.label'
         },
@@ -419,6 +419,7 @@ export const mother = defineFormPage({
     {
       id: 'mother.address',
       type: FieldType.ADDRESS,
+      required: true,
       secured: true,
       hideLabel: true,
       label: {

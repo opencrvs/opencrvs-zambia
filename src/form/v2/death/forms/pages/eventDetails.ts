@@ -324,6 +324,7 @@ export const eventDetails = defineFormPage({
     {
       id: 'eventDetails.deathLocationOther',
       type: FieldType.ADDRESS,
+      required: true,
       hideLabel: true,
       secured: true,
       label: {

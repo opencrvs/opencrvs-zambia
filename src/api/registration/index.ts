@@ -16,13 +16,18 @@ import {
   deepMerge,
   aggregateActionDeclarations,
   EventDocument,
-  getPendingAction
+  getPendingAction,
+  NameFieldValue
 } from '@opencrvs/toolkit/events'
 import { GATEWAY_URL, MOSIP_INTEROP_URL } from '@countryconfig/constants'
 import { v4 as uuidv4 } from 'uuid'
 import { sendInformantNotification } from '../notification/informantNotification'
 import { createMosipInteropClient } from '@opencrvs/mosip/api'
 import { logger } from '@countryconfig/logger'
+import {
+  shouldForwardBirthRegistrationToMosip,
+  shouldForwardDeathRegistrationToMosip
+} from '@countryconfig/form/v2/mosip'
 
 export interface ActionConfirmationRequest extends Hapi.Request {
   payload: EventDocument
@@ -137,7 +142,6 @@ async function rejectRequestedRegistration(
 ) {
   const url = new URL('events', GATEWAY_URL).toString()
   const client = createClient(url, `Bearer ${token}`)
-
   const event = await client.event.actions.register.reject.mutate({
     transactionId: uuidv4(),
     eventId,
@@ -147,23 +151,55 @@ async function rejectRequestedRegistration(
   return event
 }
 
+async function requestRejection(
+  token: string,
+  eventId: string,
+  actionId: string,
+  reason?: string
+) {
+  const url = new URL('events', GATEWAY_URL).toString()
+  const client = createClient(url, `Bearer ${token}`)
+  const event = await client.event.actions.reject.request.mutate({
+    transactionId: uuidv4(),
+    eventId,
+    actionId,
+    content: { reason }
+  })
+
+  return event
+}
+
+function handleDeferredRejection(
+  token: string,
+  eventId: string,
+  actionId: string,
+  reason?: string
+) {
+  process.nextTick(async () => {
+    await rejectRequestedRegistration(token, eventId, actionId)
+    await requestRejection(token, eventId, actionId, reason)
+  })
+}
+
 export async function onMosipBirthRegisterHandler(
   request: ActionConfirmationRequest,
   h: Hapi.ResponseToolkit
 ) {
   const token = request.auth.artifacts.token as string
   const event = request.payload
+  const declaration = aggregateActionDeclarations(event)
 
   const registrationNumber = generateRegistrationNumber()
+  const pendingAction = getPendingAction(event.actions)
 
-  const shouldForwardToMosip = true // This should be determined by your custom logic, e.g., based on verification status
+  const { valid, reason } = shouldForwardBirthRegistrationToMosip(declaration)
 
-  await sendInformantNotification({ event, token, registrationNumber })
+  // TBD: Should we let user know if they should wait for MOSIP registration to complete or send notification here?
+  // await sendInformantNotification({ event, token, registrationNumber })
 
-  if (!shouldForwardToMosip) {
-    return h
-      .response({ registrationNumber: generateRegistrationNumber() })
-      .code(200)
+  if (!valid) {
+    handleDeferredRejection(token, event.id, pendingAction.id, reason)
+    return h.response().code(202)
   }
 
   try {
@@ -171,7 +207,6 @@ export async function onMosipBirthRegisterHandler(
       'Passed country specified custom logic check for id creation. Forwarding to MOSIP...'
     )
 
-    const pendingAction = getPendingAction(event.actions)
     const declaration = deepMerge(
       aggregateActionDeclarations(event),
       pendingAction.declaration
@@ -181,11 +216,19 @@ export async function onMosipBirthRegisterHandler(
       MOSIP_INTEROP_URL,
       `Bearer ${token}`
     )
+
+    const childName = declaration['child.name'] as NameFieldValue | undefined
     mosipInteropClient.register({
       trackingId: event.trackingId,
       requestFields: {
         birthCertificateNumber: registrationNumber,
-        fullName: declaration['child.name'],
+        fullName: [
+          childName?.firstname,
+          childName?.middlename,
+          childName?.surname
+        ]
+          .filter(Boolean)
+          .join(' '),
         dateOfBirth: declaration['child.dob'],
         gender: declaration['child.gender']
       },
@@ -201,12 +244,13 @@ export async function onMosipBirthRegisterHandler(
     return h.response().code(202)
   } catch (error) {
     logger.error(error)
-
-    return h
-      .response({
-        reason: 'Unexpected error in OpenCRVS-MOSIP interoperability layer'
-      })
-      .code(400)
+    handleDeferredRejection(
+      token,
+      event.id,
+      pendingAction.id,
+      'Unexpected error in OpenCRVS-MOSIP interoperability layer'
+    )
+    return h.response().code(202)
   }
 }
 
@@ -216,17 +260,19 @@ export async function onMosipDeathRegisterHandler(
 ) {
   const token = request.auth.artifacts.token as string
   const event = request.payload
+  const declaration = aggregateActionDeclarations(event)
 
   const registrationNumber = generateRegistrationNumber()
 
-  const shouldForwardToMosip = true // This should be determined by your custom logic, e.g., based on verification status
+  const { valid, reason } = shouldForwardDeathRegistrationToMosip(declaration)
+  const pendingAction = getPendingAction(event.actions)
 
-  await sendInformantNotification({ event, token, registrationNumber })
+  // TBD: Should we let user know if they should wait for MOSIP registration to complete or send notification here?
+  // await sendInformantNotification({ event, token, registrationNumber })
 
-  if (!shouldForwardToMosip) {
-    return h
-      .response({ registrationNumber: generateRegistrationNumber() })
-      .code(200)
+  if (!valid) {
+    handleDeferredRejection(token, event.id, pendingAction.id, reason)
+    return h.response().code(202)
   }
 
   try {
@@ -234,7 +280,6 @@ export async function onMosipDeathRegisterHandler(
       'Passed country specified custom logic check for id creation. Forwarding to MOSIP...'
     )
 
-    const pendingAction = getPendingAction(event.actions)
     const declaration = deepMerge(
       aggregateActionDeclarations(event),
       pendingAction.declaration
@@ -245,13 +290,24 @@ export async function onMosipDeathRegisterHandler(
       `Bearer ${token}`
     )
 
+    const deceasedName = declaration['deceased.name'] as
+      | NameFieldValue
+      | undefined
+
     mosipInteropClient.register({
       trackingId: event.trackingId,
       requestFields: {
         deathCertificateNumber: registrationNumber,
-        fullName: declaration['deceased.name'],
+        fullName: [
+          deceasedName?.firstname,
+          deceasedName?.middlename,
+          deceasedName?.surname
+        ]
+          .filter(Boolean)
+          .join(' '),
         dateOfBirth: declaration['deceased.dob'],
-        gender: declaration['deceased.gender']
+        gender: declaration['deceased.gender'],
+        nationalIdNumber: declaration['deceased.nid']
       },
       notification: {
         recipientEmail: declaration['informant.email'] as string,
@@ -265,11 +321,12 @@ export async function onMosipDeathRegisterHandler(
     return h.response().code(202)
   } catch (error) {
     logger.error(error)
-
-    return h
-      .response({
-        reason: 'Unexpected error in OpenCRVS-MOSIP interoperability layer'
-      })
-      .code(400)
+    handleDeferredRejection(
+      token,
+      event.id,
+      pendingAction.id,
+      'Unexpected error in OpenCRVS-MOSIP interoperability layer'
+    )
+    return h.response().code(202)
   }
 }

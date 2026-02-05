@@ -23,8 +23,8 @@ import {
 import { not } from '@opencrvs/toolkit/conditionals'
 import { emptyMessage } from '../../../utils'
 import {
+  farajalandNameConfig,
   invalidNameValidator,
-  MAX_NAME_LENGTH,
   nationalIdValidator
 } from '@countryconfig/form/v2/birth/validators'
 import {
@@ -121,7 +121,7 @@ export const spouse = defineFormPage({
     connectToMOSIPIdReader(
       {
         id: 'spouse.name',
-        configuration: { maxLength: MAX_NAME_LENGTH },
+        configuration: farajalandNameConfig,
         type: FieldType.NAME,
         required: true,
         hideLabel: true,
@@ -209,7 +209,7 @@ export const spouse = defineFormPage({
         type: FieldType.AGE,
         required: true,
         label: {
-          defaultMessage: 'Age of spouse',
+          defaultMessage: 'Age of spouse (at the time of event)',
           description: 'This is the label for the field',
           id: 'event.death.action.declare.form.section.spouse.field.age.label'
         },
@@ -436,6 +436,7 @@ export const spouse = defineFormPage({
     {
       id: 'spouse.address',
       type: FieldType.ADDRESS,
+      required: true,
       hideLabel: true,
       label: {
         defaultMessage: 'Usual place of residence',

@@ -47,6 +47,7 @@ advancedSearch.form.timePeriodLabel,Label for input Time period,Time period,Pér
 advancedSearch.registeredAt,Label for date of registration field,Date of registration,Date d'enregistrement
 advancedSearch.registeredAtLocation,Label for place of registration field,Place of registration,Lieu d'enregistrement
 advancedSearch.registeredAtLocation.helperText,Helper text for place of registration field,"Search for a province, district or registration office","Rechercher une province, un district ou un bureau d'enregistrement"
+advancedSearch.registrationNumber,Label for registration number field,Registration number,Numéro d'enregistrement
 advancedSearch.status,Label for status field,Status of record,Statut de l'enregistrement
 advancedSearch.trackingId,Label for tracking ID field,Tracking ID,ID de suivi
 advancedSearch.updatedAt,Label for date of update field,Time period,Période
@@ -212,6 +213,7 @@ config.emailAllUsers.subtitle,Subtitle for email all users,This email will be se
 config.emailAllUsers.title,Title for email all users,Email all users,Envoyer un e-mail à tous les utilisateurs
 config.userRoles.language,Language name,"{language, select, en {English} fr {French} other {{language}}}","{language, select, en {Anglais} fr {Français} other {{language}}}"
 configuration.dateFormat,Default format for date values,d MMMM y,d MMMM y
+configuration.timeField.outputFormat,Default output format for time fields,hh:mm a,hh:mm a
 configuration.timeFormat,Default time format for timestamps,"MMMM dd, yyyy · hh.mm a","MMMM dd, yyyy · hh.mm a"
 conflicts.modal.assign.description,Description for modal when assign,Please note you will have sole access to this record. Please make any updates promptly otherwise unassign the record.,"Veuillez noter que vous aurez un accès exclusif à cet enregistrement. Veuillez effectuer rapidement les mises à jour éventuelles, sinon vous désassignez l'enregistrement."
 conflicts.modal.assign.title,Title for modal when assign,Assign record?,Attribuer un enregistrement ?
@@ -782,6 +784,7 @@ error.invalidName,This is the error message for invalid name,"Input contains inv
 error.occurred,The error message that displays if we want the user to try the action again,An error occurred. Please try again.,Une erreur s'est produite. Veuillez réessayer.
 error.page.load.failed,Error message when page failed to load,"Sorry, we couldn't load the content for this page","Désolé, nous n'avons pas pu charger le contenu de cette page."
 error.passwordSubmissionError,Error message when password verification fails,Sorry that password did not work,Désolé que le mot de passe n'ait pas fonctionné
+error.pdf,PDF load Error,Failed to load PDF,Échec du chargement du PDF
 error.required.password,New password required,New password is not valid,Le nouveau mot de passe n'est pas valide
 error.search,The error message shown when a search query fails,An error occurred while searching,Une erreur s'est produite lors de la recherche
 error.searchParamCountError,Error message when the search parameters are less than two,You must select a minimum of 2 search criteria,Vous devez sélectionner un minimum de 2 critères de recherche
@@ -809,7 +812,7 @@ event.birth.action.correction.form.section.requester.identity.verify.title,This 
 event.birth.action.declare.form.label,This is what this form is referred as in the system,Birth decalration form,Birth decalration form
 event.birth.action.declare.form.review.comment.label,Label for the comment field in the review section,Comment,Commentaire
 event.birth.action.declare.form.review.signature.label,Label for the signature field in the review section,Signature of informant,Signature de l'informateur
-event.birth.action.declare.form.review.title,Title of the form to show in review page,"{child.name.firstname, select, __EMPTY__ {Birth declaration} other {{child.name.surname, select, __EMPTY__ {Birth declaration for {child.name.firstname}} other {Birth declaration for {child.name.firstname} {child.name.surname}}}}}","{child.name.firstname, select, __EMPTY__ {Déclaration de naissance} other {{child.name.surname, select, __EMPTY__ {Déclaration de naissance pour {child.name.firstname}} other {Déclaration de naissance pour {child.name.firstname} {child.name.surname}}}}}"
+event.birth.action.declare.form.review.title,Title of the form to show in review page,"{child.name.firstname, select, __EMPTY__ {{child.name.surname, select, __EMPTY__ {Birth declaration} other {Birth declaration for {child.name.surname}}}} other {{child.name.surname, select, __EMPTY__ {Birth declaration for {child.name.firstname}} other {Birth declaration for {child.name.firstname} {child.name.surname}}}}}","{child.name.firstname, select, __EMPTY__ {{child.name.surname, select, __EMPTY__ {Déclaration de naissance} other {Déclaration de naissance pour {child.name.surname}}}} other {{child.name.surname, select, __EMPTY__ {Déclaration de naissance pour {child.name.firstname}} other {Déclaration de naissance pour {child.name.firstname} {child.name.surname}}}}}"
 event.birth.action.declare.form.section.child.field.attendantAtBirth.label,This is the label for the field,Attendant at birth,Accoucheur(se)
 event.birth.action.declare.form.section.child.field.birthLocation.label,This is the label for the field,Location of birth,Lieu de naissance
 event.birth.action.declare.form.section.child.field.birthType.label,This is the label for the field,Type of birth,Type d'accouchement
@@ -825,17 +828,17 @@ event.birth.action.declare.form.section.documents.field.proofOfFather.label,This
 event.birth.action.declare.form.section.documents.field.proofOfMother.label,This is the label for the field,Proof of mother's ID,Identité de la mère
 event.birth.action.declare.form.section.documents.field.proofOther.label,This is the label for the field,Other,Autre
 event.birth.action.declare.form.section.father.field.address.addressSameAs.label,This is the label for the field,Same as mother's usual place of residence?,Identique au lieu de résidence habituel de la mère?
-event.birth.action.declare.form.section.father.field.age.label,This is the label for the field,Age of father,Âge du père
+event.birth.action.declare.form.section.father.field.age.label,This is the label for the field,Age of father (at the time of event),Âge du père (au moment de l'événement)
 event.birth.action.declare.form.section.father.field.name.label,This is the label for the field,Father's name,Nom du père
 event.birth.action.declare.form.section.father.field.reason.label,This is the label for the field,Reason,Raison
-event.birth.action.declare.form.section.informant.field.age.label,This is the label for the field,Age of informant,Âge de l'informateur
+event.birth.action.declare.form.section.informant.field.age.label,This is the label for the field,Age of informant (at the time of event),Âge de l'informateur (au moment de l'événement)
 event.birth.action.declare.form.section.informant.field.email.label,This is the label for the field,Email,E-mail
 event.birth.action.declare.form.section.informant.field.name.label,This is the label for the field,Informant's name,Nom du déclarant
 event.birth.action.declare.form.section.informant.field.other.relation.label,This is the label for the field,Relationship to child,Relation avec l'enfant
 event.birth.action.declare.form.section.informant.field.phoneNo.error,The error message that appears on phone numbers where the first two characters must be a 01 and length must be 11,Must be a valid 10 digit number that starts with 0(7|9),Doit être un nombre valide de  {num} chiffres qui commence par  {start}
 event.birth.action.declare.form.section.informant.field.phoneNo.label,This is the label for the field,Phone number,Numéro de téléphone
 event.birth.action.declare.form.section.informant.field.relation.label,This is the label for the field,Relationship to child,Relation avec l'enfant
-event.birth.action.declare.form.section.mother.field.age.label,This is the label for the field,Age of mother,Âge de la mère
+event.birth.action.declare.form.section.mother.field.age.label,This is the label for the field,Age of mother (at the time of event),Âge de la mère (au moment de l'événement)
 event.birth.action.declare.form.section.mother.field.name.label,This is the label for the field,Mother's name,Nom de la mère
 event.birth.action.declare.form.section.mother.field.previousBirths.label,This is the label for the field,No. of previous births,Nombre de naissances antérieures
 event.birth.action.declare.form.section.mother.field.reason.label,This is the label for the field,Reason,Raison
@@ -875,8 +878,6 @@ event.death.action.certificate.form.cancel.confirmation.title,This is the title 
 event.death.action.certificate.form.label,This is what this form is referred as in the system,Death certificate collector,Collecteur de certificat de décès
 event.death.action.certificate.form.section.collectPayment.data.label,Title for the data section,Payment details,Détails du paiement
 event.death.action.certificate.form.section.collectPayment.fee.label,Title for the data entry,Fee,Frais
-event.death.action.certificate.form.section.collectPayment.fee.label,Title for the data entry,Fee,Frais
-event.death.action.certificate.form.section.collectPayment.service.label,Title for the data entry,Service,Service
 event.death.action.certificate.form.section.collectPayment.service.label,Title for the data entry,Service,Service
 event.death.action.certificate.form.section.collectPayment.service.label.afterRegistrationTarget,Death registration after 45 days of date of death message,Death registration after 45 days of date of death,Enregistrement du décès après 45 jours de la date du décès
 event.death.action.certificate.form.section.collectPayment.service.label.beforeRegistrationTarget,Death registration before 45 days of date of death message,Death registration before 45 days of date of death,Enregistrement du décès avant 45 jours de la date du décès
@@ -934,16 +935,14 @@ event.death.action.correction.reason.option.other.label,Label for the other opti
 event.death.action.correction.reason.other.label,Label for the reason,Specify reason,Préciser la raison
 event.death.action.declare.form.label,This is what this form is referred as in the system,Death declaration form,Formulaire de déclaration de décès
 event.death.action.declare.form.nid.unique,This is the error message for non-unique ID Number,National id must be unique,L'identifiant national doit être unique
-event.death.action.declare.form.nid.unique,This is the error message for non-unique ID Number,National id must be unique,L'identifiant national doit être unique
-event.death.action.declare.form.nid.unique,This is the error message for non-unique ID Number,National id must be unique,L'identifiant national doit être unique
 event.death.action.declare.form.review.comment.label,Label for the comment field in the review section,Comment,Commentaire
 event.death.action.declare.form.review.signature.label,Label for the signature field in the review section,Signature of informant,Signature de l'informateur
-event.death.action.declare.form.review.title,Title of the form to show in review page,"{deceased.name.firstname, select, __EMPTY__ {Death declaration} other {{deceased.name.surname, select, __EMPTY__ {Death declaration for {deceased.name.firstname}} other {Death declaration for {deceased.name.firstname} {deceased.name.surname}}}}}","{deceased.name.firstname, select, __EMPTY__ {Déclaration de décès} other {{deceased.name.surname, select, __EMPTY__ {Déclaration de décès de {deceased.name.firstname}} other {Déclaration de décès de {deceased.name.firstname} {deceased.name.surname}}}}}"
+event.death.action.declare.form.review.title,Title of the form to show in review page,"{deceased.name.firstname, select, __EMPTY__ {{deceased.name.surname, select, __EMPTY__ {Death declaration} other {Death declaration for {deceased.name.surname}}}} other {{deceased.name.surname, select, __EMPTY__ {Death declaration for {deceased.name.firstname}} other {Death declaration for {deceased.name.firstname} {deceased.name.surname}}}}}","{deceased.name.firstname, select, __EMPTY__ {{deceased.name.surname, select, __EMPTY__ {Déclaration de décès} other {Déclaration de décès de {deceased.name.surname}}}} other {{deceased.name.surname, select, __EMPTY__ {Déclaration de décès de {deceased.name.firstname}} other {Déclaration de décès de {deceased.name.firstname} {deceased.name.surname}}}}}"
 event.death.action.declare.form.section.deceased.field.address.label,This is the label for the field,Usual place of residence,Lieu de résidence habituel
 event.death.action.declare.form.section.deceased.field.addressHelper.label,This is the label for the field,Usual place of residence,Lieu de résidence habituel
 event.death.action.declare.form.section.deceased.field.age.checkbox.label,This is the label for the field,Exact date of birth unknown,Date exacte de naissance inconnue
 event.death.action.declare.form.section.deceased.field.age.error,Error message for invalid age,Age must be between 0 and 120,L'auteur doit avoir entre 0 et 120 ans
-event.death.action.declare.form.section.deceased.field.age.label,This is the label for the field,Age of deceased,Âge du défunt
+event.death.action.declare.form.section.deceased.field.age.label,This is the label for the field,Age of deceased (at the time of event),Âge du défunt (au moment de l'événement)
 event.death.action.declare.form.section.deceased.field.age.postfix,This is the postfix for age field,years,ans
 event.death.action.declare.form.section.deceased.field.deathLocation.label,This is the label for the field,Health Institution,Établissement de santé
 event.death.action.declare.form.section.deceased.field.deathLocationOther.label,This is the label for the field,Death location address,Adresse du lieu de décès
@@ -972,7 +971,7 @@ event.death.action.declare.form.section.informant.field.address.addressSameAs.la
 event.death.action.declare.form.section.informant.field.address.label,This is the label for the field,Usual place of residence,Lieu de résidence habituel
 event.death.action.declare.form.section.informant.field.addressHelper.label,This is the label for the field,Usual place of residence,Lieu de résidence habituel
 event.death.action.declare.form.section.informant.field.age.checkbox.label,This is the label for the field,Exact date of birth unknown,Date exacte de naissance inconnue
-event.death.action.declare.form.section.informant.field.age.label,This is the label for the field,Age of informant,Âge de l'informateur
+event.death.action.declare.form.section.informant.field.age.label,This is the label for the field,Age of informant (at the time of event),Âge de l'informateur (au moment de l'événement)
 event.death.action.declare.form.section.informant.field.age.postfix,This is the postfix for age field,years,ans
 event.death.action.declare.form.section.informant.field.brn.label,This is the label for the field,ID Number,Numéro d'identité
 event.death.action.declare.form.section.informant.field.dob.error,This is the error message for invalid date,Must be a valid Birthdate,Doit être une date de naissance valide
@@ -996,7 +995,7 @@ event.death.action.declare.form.section.spouse.field.address.addressSameAs.label
 event.death.action.declare.form.section.spouse.field.address.label,This is the label for the field,Usual place of residence,Lieu de résidence habituel
 event.death.action.declare.form.section.spouse.field.addressHelper.label,This is the label for the field,Usual place of residence,Lieu de résidence habituel
 event.death.action.declare.form.section.spouse.field.age.checkbox.label,This is the label for the field,Exact date of birth unknown,Date exacte de naissance inconnue
-event.death.action.declare.form.section.spouse.field.age.label,This is the label for the field,Age of spouse,Âge du conjoint
+event.death.action.declare.form.section.spouse.field.age.label,This is the label for the field,Age of spouse (at the time of event),Âge du conjoint (au moment de l'événement)
 event.death.action.declare.form.section.spouse.field.age.postfix,This is the postfix for age field,years,ans
 event.death.action.declare.form.section.spouse.field.brn.label,This is the label for the field,ID Number,Numéro d'identité
 event.death.action.declare.form.section.spouse.field.detailsNotAvailable.label,This is the label for the field,Spouse's details are not available,Les informations du conjoint ne sont pas disponibles
@@ -1071,9 +1070,8 @@ event.tennis-club-membership.action.certificate.form.section.requester.printInAd
 event.tennis-club-membership.action.certificate.form.section.who.title,This is the title of the section,Print certified copy,Imprimer une copie certifiée
 event.tennis-club-membership.action.collect-certificate.label,This is shown as the action name anywhere the user can trigger the action from,Print certificate,Imprimer le certificat
 event.tennis-club-membership.action.declare.form.label,This is what this form is referred as in the system,Tennis club membership application,Tennis club membership application
-event.tennis-club-membership.action.declare.form.review.title,Title of the form to show in review page,"{applicant.name.firstname, select, __EMPTY__ {Member declaration} other {{applicant.name.surname, select, __EMPTY__ {Member declaration for {applicant.name.firstname}} other {Member declaration for {applicant.name.firstname} {applicant.name.surname}}}}}","{applicant.name.firstname, select, __EMPTY__ {Déclaration des membres} other {{applicant.name.surname, select, __EMPTY__ {Déclaration des membres pour {applicant.name.firstname}} other {Déclaration des membres pour {applicant.name.firstname} {applicant.name.surname}}}}}"
+event.tennis-club-membership.action.declare.form.review.title,Title of the form to show in review page,"{applicant.name.firstname, select, __EMPTY__{{applicant.name.surname, select, __EMPTY__{Member declaration} other{Member declaration for {applicant.name.surname}}}} other{{applicant.name.surname, select, __EMPTY__{Member declaration for {applicant.name.firstname}} other{Member declaration for {applicant.name.firstname} {applicant.name.surname}}}}}","{applicant.name.firstname, select, __EMPTY__ {{applicant.name.surname, select, __EMPTY__ {Déclaration des membres} other {Déclaration des membres pour {applicant.name.surname}}}} other {{applicant.name.surname, select, __EMPTY__ {Déclaration des membres pour {applicant.name.firstname}} other {Déclaration des membres pour {applicant.name.firstname} {applicant.name.surname}}}}}"
 event.tennis-club-membership.action.declare.form.section.recommender.field.firstname.label,This is the label for the field,Recommender's first name,Recommender's first name
-event.tennis-club-membership.action.declare.form.section.recommender.field.firstname.label,This is the label for the field,Recommender's name,Nom du recommandataire
 event.tennis-club-membership.action.declare.form.section.recommender.field.id.label,This is the label for the field,Recommender's membership ID,Recommender's membership ID
 event.tennis-club-membership.action.declare.form.section.recommender.field.none.label,This is the label for the field,No recommender,No recommender
 event.tennis-club-membership.action.declare.form.section.recommender.title,This is the title of the section,Who is recommending the applicant?,Who is recommending the applicant?
@@ -1114,7 +1112,7 @@ event.tennis-club-membership.summary.field.recommender.firstname.empty,Shown whe
 event.tennis-club-membership.summary.field.recommender.firstname.label,Label for the recommender's first name field,Recommender's First Name,Recommender's First Name
 event.tennis-club-membership.summary.field.recommender.id.empty,Shown when the recommender id is missing in summary,Recommender's id missing,Recommender's id missing
 event.tennis-club-membership.summary.field.recommender.id.label,Label for the recommender's ID field,Recommender's ID,Recommender's ID
-events.history.status,Events status history,"{status, select, CREATE {Declaration started} NOTIFY {Sent incomplete} VALIDATE {Sent for approval} DRAFT {Draft} DECLARE {Sent for review} REGISTER {Registered} PRINT_CERTIFICATE {Certified} REJECT {Rejected} ARCHIVE {Archived} DUPLICATE_DETECTED {Flagged as potential duplicate} MARKED_AS_DUPLICATE {Marked as a duplicate} MARK_AS_NOT_DUPLICATE {Marked not a duplicate} CORRECTED {Record corrected} REQUEST_CORRECTION {Correction requested} APPROVE_CORRECTION {Correction approved} REJECT_CORRECTION {Correction rejected} READ {Viewed} ASSIGN {Assigned} UNASSIGN {Unassigned} UPDATE {Updated} other {Unknown}}","{status, select, CREATE {Déclaration commencée} NOTIFY {Envoyé incomplet} VALIDATE {Envoyé pour approbation} DRAFT {Brouillon} DECLARE {Envoyé pour révision} REGISTER {Enregistré} PRINT_CERTIFICATE {Certifié} REJECT {Rejeté} ARCHIVE {Archivé} DUPLICATE_DETECTED {Marqué comme doublon} MARKED_AS_DUPLICATE {Marqué comme doublon} MARK_AS_NOT_DUPLICATE {Marqué comme non en doublon} CORRECTED {Enregistrement corrigé} REQUEST_CORRECTION {Correction demandée} APPROVE_CORRECTION {Correction approuvée} REJECT_CORRECTION {Correction refusée} READ {Consulté} ASSIGN {Attribué} UNASSIGN {Désattribué} UPDATE {Mis à jour} other {Inconnu}}"
+events.history.status,Events status history,"{status, select, Requested {Waiting for external validation} other {{action, select, CREATE {Declaration started} NOTIFY {Sent incomplete} VALIDATE {Sent for approval} DRAFT {Draft} DECLARE {Sent for review} REGISTER {Registered} PRINT_CERTIFICATE {Certified} REJECT {Rejected} ARCHIVE {Archived} DUPLICATE_DETECTED {Flagged as potential duplicate} MARKED_AS_DUPLICATE {Marked as a duplicate} MARK_AS_NOT_DUPLICATE {Marked not a duplicate} CORRECTED {Record corrected} REQUEST_CORRECTION {Correction requested} APPROVE_CORRECTION {Correction approved} REJECT_CORRECTION {Correction rejected} READ {Viewed} ASSIGN {Assigned} UNASSIGN {Unassigned} UPDATE {Updated} other {Unknown}}}}","{status, select, Requested {En attente de validation externe} other {{action, select, CREATE {Déclaration commencée} NOTIFY {Envoyé incomplet} VALIDATE {Envoyé pour approbation} DRAFT {Brouillon} DECLARE {Envoyé pour révision} REGISTER {Enregistré} PRINT_CERTIFICATE {Certifié} REJECT {Rejeté} ARCHIVE {Archivé} DUPLICATE_DETECTED {Marqué comme doublon} MARKED_AS_DUPLICATE {Marqué comme doublon} MARK_AS_NOT_DUPLICATE {Marqué comme non en doublon} CORRECTED {Enregistrement corrigé} REQUEST_CORRECTION {Correction demandée} APPROVE_CORRECTION {Correction approuvée} REJECT_CORRECTION {Correction refusée} READ {Consulté} ASSIGN {Attribué} UNASSIGN {Désattribué} UPDATE {Mis à jour} other {Inconnu}}}}"
 events.outbox.processingAction,Message in outbox when processing action,"{action, select, DECLARE {Sending} REGISTER {Registering} VALIDATE {Sending for approval} NOTIFY {Sending} REJECT {Sending for updates} ARCHIVE {Archiving} PRINT_CERTIFICATE {Certifying} REQUEST_CORRECTION {Requesting correction} APPROVE_CORRECTION {Approving correction} REJECT_CORRECTION {Rejecting correction} ASSIGN {Assigning} UNASSIGN {Unassigning} other {processing action}}","{action, select, DECLARE {Envoi} REGISTER {Enregistrement} VALIDATE {Envoi pour approbation} NOTIFY {Envoi} REJECT {Envoi pour mise à jour} ARCHIVE {Archivage} PRINT_CERTIFICATE {Certification} REQUEST_CORRECTION {Demande de correction} APPROVE_CORRECTION {Approbation de la correction} REJECT_CORRECTION {Rejet de la correction} ASSIGN {Attribution} UNASSIGN {Désattribution} other {action en cours}}"
 events.outbox.waitingForAction,Message in outbox when waiting for action,"Waiting to {action, select, DECLARE {send} CREATE {send} REGISTER {register} VALIDATE {send for approval} NOTIFY {send} REJECT {send for updates} ARCHIVE {archive} PRINT_CERTIFICATE {certify} REQUEST_CORRECTION {request correction} APPROVE_CORRECTION {approve correction} REJECT_CORRECTION {reject correction} ASSIGN {assign} UNASSIGN {unassign} other {action}}","En attente de {action, select, DECLARE {l'envoi} CREATE {l'envoi} REGISTER {l'enregistrement} VALIDATE {l'envoi pour approbation} NOTIFY {l'envoi} REJECT {l'envoi pour mise à jour} ARCHIVE {l'archivage} PRINT_CERTIFICATE {la certification} REQUEST_CORRECTION {la demande de correction} APPROVE_CORRECTION {l'approbation de la correction} REJECT_CORRECTION {le rejet de la correction} ASSIGN {l'attribution} UNASSIGN {la désattribution} other {l'action}}"
 events.status,Dynamic event status,"{status, select, OUTBOX {Syncing..} CREATED {Draft} VALIDATED {Validated} DRAFT {Draft} DECLARED {Declared} REGISTERED {Registered} CERTIFIED {Certified} REJECTED {Rejected} ARCHIVED {Archived} MARKED_AS_DUPLICATE {Marked as a duplicate} MARK_AS_NOT_DUPLICATE {Marked not a duplicate} NOTIFIED {In progress} other {Unknown}}","{status, select, OUTBOX {Synchronisation..} CREATED {Brouillon} VALIDATED {Validé} DRAFT {Brouillon} DECLARED {Déclaré} REGISTERED {Enregistré} CERTIFIED {Certifié} REJECTED {Nécessite une mise à jour} ARCHIVED {Archivé} MARKED_AS_DUPLICATE {Marqué comme doublon} MARK_AS_NOT_DUPLICATE {Marqué comme non en doublon} NOTIFIED {Notifié} other {Inconnu}}"
@@ -1461,6 +1459,8 @@ home.header.teamTitle,Team title,Team,Équipe
 home.header.typeName,Search menu name type,Name,Nom
 home.header.typePhone,Search menu phone no type,Phone no.,N° de téléphone
 home.header.typeRN,Search menu brn drn type,Registration no.,N ° d'enregistrement.
+imageEditorModal.description,Description for the image editor modal,Resize and position the chosen image,Redimensionner et positionner l'image choisie
+imageEditorModal.title,Title for the image editor modal,Crop & resize image,Recadrer et redimensionner l'image
 imageUploadOption.upload.documentType,Show error message if the document type is not selected,Please select the type of document first,Veuillez d'abord sélectionner le type de document
 imageUploadOption.upload.error,Show error messages while uploading,File format not supported. Please upload a .png or .jpg (max {maxSize}mb),"Format de fichier non pris en charge. Veuillez joindre un png, jpg (max {maxSize}mb)"
 imageUploadOption.upload.imageFormat,Show error message if the selected image type is not supported,File format not supported. Please upload a .png or .jpg (max {maxSize}mb),Le format d'image n'est pas supporté. Veuillez joindre un png ou un jpg (max {maxSize}mb)
@@ -2014,6 +2014,17 @@ search.searchResultFor,The search result text,Search result for “{param}”,r�
 search.searchingFor,The searching for text,Searching for “{param}”,Recherche de  “{param}”
 search.totalResultText,The total result text,"{total, plural, =0 {} one {# record found} other {# records found}} ","{total, plural, =0 {} one {# record found} other {# records found}}"
 search.waitingForConnection,The text when there is no connectivity,Reconnect to load declarations,Se reconnecter pour charger les déclarations
+searchField.indicators.clearButton,Clear button text,Clear,Effacer
+searchField.indicators.clearModal.cancel,Cancel button for clear confirmation modal,Cancel,Annuler
+searchField.indicators.clearModal.confirm,Confirm button for clear confirmation modal,Confirm,Confirmer
+searchField.indicators.clearModal.description,Description for the clear confirmation modal,This will remove the current search results.,Cela supprimera les résultats de recherche actuels.
+searchField.indicators.clearModal.title,Title for the clear confirmation modal,Clear search results?,Effacer les résultats de recherche ?
+searchField.indicators.confirmButton,Confirm button text,Search,Rechercher
+searchField.indicators.httpError,HTTP error indicator,"{statusCode, select, 408{Timed out} other{An error occurred while fetching data}}","{statusCode, select, 408{Délai d'attente dépassé} other{Une erreur s'est produite lors de la récupération des données}}"
+searchField.indicators.loading,Loading indicator,Searching...,Recherche en cours...
+searchField.indicators.noResultsError,No results found indicator,No record found,Aucun enregistrement trouvé
+searchField.indicators.offline,Offline indicator,Search is unavailable while offline,La recherche n'est pas disponible hors ligne
+searchField.indicators.ok,OK button text,Found {count} results,{count} résultats trouvés
 serviceWorker.cacheKey.WorkBoxRuntime.error.button.logout,Button label for logging out when WorkBox runtime cache key is missing,Log out,Se déconnecter
 serviceWorker.cacheKey.WorkBoxRuntime.error.button.reload,Button label for logging out when WorkBox runtime cache key is missing,Reload,Recharger
 serviceWorker.cacheKey.WorkBoxRuntime.error.content,Content shown when WorkBox runtime cache key is missing,"Something went wrong with loading the app. Reload this page, or log out and log back in to continue.",Un problème est survenu lors du chargement de l’application. Rechargez cette page ou déconnectez-vous puis reconnectez-vous pour continuer.

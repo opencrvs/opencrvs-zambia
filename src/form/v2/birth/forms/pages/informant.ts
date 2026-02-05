@@ -24,8 +24,8 @@ import {
 import { not } from '@opencrvs/toolkit/conditionals'
 import { createSelectOptions, emptyMessage } from '../../../utils'
 import {
+  farajalandNameConfig,
   invalidNameValidator,
-  MAX_NAME_LENGTH,
   nationalIdValidator
 } from '@countryconfig/form/v2/birth/validators'
 import { IdType, idTypeOptions } from '../../../person'
@@ -162,7 +162,7 @@ export const informant = defineFormPage({
         id: 'informant.name',
         type: FieldType.NAME,
         required: true,
-        configuration: { maxLength: MAX_NAME_LENGTH },
+        configuration: farajalandNameConfig,
         hideLabel: true,
         label: {
           defaultMessage: "Informant's name",
@@ -261,7 +261,7 @@ export const informant = defineFormPage({
         analytics: true,
         required: true,
         label: {
-          defaultMessage: 'Age of informant',
+          defaultMessage: 'Age of informant (at the time of event)',
           description: 'This is the label for the field',
           id: 'event.birth.action.declare.form.section.informant.field.age.label'
         },
@@ -466,6 +466,7 @@ export const informant = defineFormPage({
     {
       id: 'informant.address',
       type: FieldType.ADDRESS,
+      required: true,
       hideLabel: true,
       label: {
         defaultMessage: 'Usual place of residence',
