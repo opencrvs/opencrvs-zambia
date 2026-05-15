@@ -28,6 +28,7 @@ import {
   shouldForwardBirthRegistrationToMosip,
   shouldForwardDeathRegistrationToMosip
 } from '@countryconfig/form/v2/mosip'
+import { capitalize } from 'lodash'
 
 export interface ActionConfirmationRequest extends Hapi.Request {
   payload: EventDocument
@@ -218,27 +219,67 @@ export async function onMosipBirthRegisterHandler(
     )
 
     const childName = declaration['child.name'] as NameFieldValue | undefined
-    mosipInteropClient.register({
+    await mosipInteropClient.register({
       trackingId: event.trackingId,
       requestFields: {
         birthCertificateNumber: registrationNumber,
-        fullName: [
-          childName?.firstname,
-          childName?.middlename,
-          childName?.surname
-        ]
-          .filter(Boolean)
-          .join(' '),
-        dateOfBirth: declaration['child.dob'],
-        gender: declaration['child.gender']
+        fullName:
+          '[ {\n  "language" : "eng",\n  "value" : "' +
+          [childName?.firstname, childName?.middlename, childName?.surname]
+            .filter(Boolean)
+            .join(' ') +
+          '"\n}]',
+
+        dateOfBirth: declaration['child.dob']?.toString().replaceAll('-', '/'),
+        gender:
+          '[ {\n  "language" : "eng",\n  "value" : "' +
+          capitalize(declaration['child.gender'] as string) +
+          '"\n}]',
+        postalCode: '14022',
+        email: 'pyry@opencrvs.org',
+        phone: '7790075085',
+        zone: '[ {\n  "language" : "eng",\n  "value" : "Ben Mansour"\n}]',
+        region:
+          '[ {\n  "language" : "eng",\n  "value" : "Rabat Sale Kenitra"\n}]',
+        province: '[ {\n  "language" : "eng",\n  "value" : "Kenitra"\n}]',
+        preferredLang: 'English'
       },
       notification: {
-        recipientEmail: declaration['informant.email'] as string,
-        recipientFullName: '@TODO',
-        recipientPhone: '@TODO'
+        recipientEmail: 'pyry@opencrvs.org',
+        recipientFullName: 'Pyry Rouvila',
+        recipientPhone: '7790075085'
       },
-      metaInfo: {},
-      audit: {}
+      metaInfo: {
+        metaData:
+          '[{\n  "label" : "registrationType",\n  "value" : "NEW"\n}, {\n  "label" : "machineId",\n  "value" : "20042"\n}, {\n  "label" : "centerId",\n  "value" : "10001"\n}]',
+        registrationId: '10001100620007420250522121835',
+        operationsData:
+          '[ {\n  "label" : "officerId",\n  "value" : "crvs1"\n}, {\n  "label" : "officerBiometricFileName",\n  "value" : null\n}, {\n  "label" : "supervisorId",\n  "value" : null\n}, {\n  "label" : "supervisorBiometricFileName",\n  "value" : null\n}, {\n  "label" : "supervisorPassword",\n  "value" : "false"\n}, {\n  "label" : "officerPassword",\n  "value" : "true"\n}, {\n  "label" : "supervisorPIN",\n  "value" : null\n}, {\n  "label" : "officerPIN",\n  "value" : null\n}, {\n  "label" : "supervisorOTPAuthentication",\n  "value" : "false"\n}, {\n  "label" : "officerOTPAuthentication",\n  "value" : "false"\n} ]',
+        capturedRegisteredDevices: '[]',
+        creationDate: '20250225110733'
+        // informantPsut
+      },
+      audit: {
+        uuid: 'c75s4521-87d6-6a4x-balw-2432e2355440',
+        createdAt: '2025-02-25T13:22:49.214Z',
+        eventId: 'REG-EVT-066',
+        eventName: 'PACKET_CREATION_SUCCESS',
+        eventType: 'USER',
+        hostName: 'DESKTOP-JL4BAEV',
+        hostIp: 'localhost',
+        applicationId: 'REG',
+        applicationName: 'REGISTRATION',
+        sessionUserId: 'crvs',
+        sessionUserName: 'crvs',
+        id: '10001100620007420250522121835',
+        idType: 'REGISTRATION_ID',
+        createdBy: 'crvs',
+        moduleName: 'Packet Handler',
+        moduleId: 'REG-MOD-117',
+        description: 'Packet Succesfully Created',
+        actionTimeStamp: '2025-02-25T07:52:49.214Z'
+      },
+      schemaJson: `{"$schema":"http://json-schema.org/draft-07/schema#","description":"SL Identity schema","additionalProperties":false,"title":"SL Identity schema","type":"object","definitions":{"simpleType":{"uniqueItems":true,"additionalItems":false,"type":"array","items":{"additionalProperties":false,"type":"object","required":["language","value"],"properties":{"language":{"type":"string"},"value":{"type":"string"}}}},"documentType":{"additionalProperties":false,"type":"object","required":["format","type","value"],"properties":{"refNumber":{"type":["string","null"]},"format":{"type":"string"},"type":{"type":"string"},"value":{"type":"string"}}},"biometricsType":{"additionalProperties":false,"type":"object","properties":{"format":{"type":"string"},"version":{"type":"number","minimum":0},"value":{"type":"string"}}}},"properties":{"identity":{"additionalProperties":false,"type":"object","required":["IDSchemaVersion","fullName","dateOfBirth","gender","permanentAddress","email","individualBiometrics"],"properties":{"printedName":{"bioAttributes":[],"validators":[{"langCode":null,"validator":"^(?=.{3,50}$).*","arguments":[],"type":"regex"}],"fieldCategory":"pvt","format":"none","fieldType":"default","$ref":"#/definitions/simpleType"},"shortenedPrintedName":{"bioAttributes":[],"validators":[{"langCode":null,"validator":"^(?=.{3,50}$).*","arguments":[],"type":"regex"}],"fieldCategory":"pvt","format":"none","fieldType":"default","$ref":"#/definitions/simpleType"},"proofOfAddress":{"bioAttributes":[],"fieldCategory":"pvt","format":"none","fieldType":"default","$ref":"#/definitions/documentType"},"layName":{"bioAttributes":[],"validators":[{"langCode":null,"validator":"^(?=.{3,50}$).*","arguments":[],"type":"regex"}],"fieldCategory":"pvt","format":"none","fieldType":"default","$ref":"#/definitions/simpleType"},"fatherName":{"bioAttributes":[],"validators":[{"langCode":null,"validator":"^(?=.{0,50}$).*","arguments":[],"type":"regex"}],"fieldCategory":"pvt","format":"none","fieldType":"default","$ref":"#/definitions/simpleType"},"gender":{"bioAttributes":[],"fieldCategory":"pvt","format":"","fieldType":"dynamic","$ref":"#/definitions/simpleType"},"city":{"bioAttributes":[],"validators":[{"langCode":null,"validator":"^(?=.{0,50}$).*","arguments":[],"type":"regex"}],"fieldCategory":"pvt","format":"none","fieldType":"default","$ref":"#/definitions/simpleType"},"postalCode":{"bioAttributes":[],"validators":[{"validator":"^[(?i)A-Z0-9]{5}$|^NA$","arguments":[],"type":"regex"}],"fieldCategory":"pvt","format":"none","type":"string","fieldType":"default"},"individualBiometrics":{"bioAttributes":["leftEye","rightEye","rightIndex","rightLittle","rightRing","rightMiddle","leftIndex","leftLittle","leftRing","leftMiddle","leftThumb","rightThumb","face"],"fieldCategory":"pvt","format":"none","fieldType":"default","$ref":"#/definitions/biometricsType"},"province":{"bioAttributes":[],"validators":[{"langCode":null,"validator":"^(?=.{0,50}$).*","arguments":[],"type":"regex"}],"fieldCategory":"pvt","format":"none","fieldType":"default","$ref":"#/definitions/simpleType"},"nationalIdentityNumber":{"bioAttributes":[],"validators":[{"langCode":null,"validator":"^([0-9]{9}[x|X|v|V]|[0-9]{12})$","arguments":[],"type":"regex"}],"fieldCategory":"pvt","format":"kyc","type":"string","fieldType":"default"},"zone":{"bioAttributes":[],"fieldCategory":"pvt","format":"none","fieldType":"default","$ref":"#/definitions/simpleType"},"proofOfDateOfBirth":{"bioAttributes":[],"fieldCategory":"pvt","format":"none","fieldType":"default","$ref":"#/definitions/documentType"},"residenceStatus":{"bioAttributes":[],"fieldCategory":"kyc","format":"none","fieldType":"dynamic","$ref":"#/definitions/simpleType"},"permanentAddress":{"bioAttributes":[],"validators":[{"langCode":null,"validator":"^(?=.{0,50}$).*","arguments":[],"type":"regex"}],"fieldCategory":"pvt","format":"none","fieldType":"default","$ref":"#/definitions/simpleType"},"temporaryAddress":{"bioAttributes":[],"validators":[{"langCode":null,"validator":"^(?=.{0,50}$).*","arguments":[],"type":"regex"}],"fieldCategory":"pvt","format":"none","fieldType":"default","$ref":"#/definitions/simpleType"},"email":{"bioAttributes":[],"validators":[{"langCode":null,"validator":"^[A-Za-z0-9_\\\\-]+(\\\\.[A-Za-z0-9_]+)*@[A-Za-z0-9_-]+(\\\\.[A-Za-z0-9_]+)*(\\\\.[a-zA-Z]{2,})$","arguments":[],"type":"regex"}],"fieldCategory":"pvt","format":"none","type":"string","fieldType":"default"},"profession":{"bioAttributes":[],"fieldCategory":"pvt","format":"","fieldType":"dynamic","$ref":"#/definitions/simpleType"},"introducerRID":{"bioAttributes":[],"fieldCategory":"evidence","format":"none","type":"string","fieldType":"default"},"introducerBiometrics":{"bioAttributes":["leftEye","rightEye","rightIndex","rightLittle","rightRing","rightMiddle","leftIndex","leftLittle","leftRing","leftMiddle","leftThumb","rightThumb","face"],"fieldCategory":"pvt","format":"none","fieldType":"default","$ref":"#/definitions/biometricsType"},"fullName":{"bioAttributes":[],"validators":[{"langCode":null,"validator":"^(?=.{3,50}$).*","arguments":[],"type":"regex"}],"fieldCategory":"pvt","format":"none","fieldType":"default","$ref":"#/definitions/simpleType"},"dateOfBirth":{"bioAttributes":[],"validators":[{"langCode":null,"validator":"^(1869|18[7-9][0-9]|19[0-9][0-9]|20[0-9][0-9])/([0][1-9]|1[0-2])/([0][1-9]|[1-2][0-9]|3[01])$","arguments":[],"type":"regex"}],"fieldCategory":"pvt","format":"none","type":"string","fieldType":"default"},"individualAuthBiometrics":{"bioAttributes":["leftEye","rightEye","rightIndex","rightLittle","rightRing","rightMiddle","leftIndex","leftLittle","leftRing","leftMiddle","leftThumb","rightThumb","face"],"fieldCategory":"pvt","format":"none","fieldType":"default","$ref":"#/definitions/biometricsType"},"introducerUIN":{"bioAttributes":[],"fieldCategory":"evidence","format":"none","type":"string","fieldType":"default"},"proofOfIdentity":{"bioAttributes":[],"fieldCategory":"pvt","format":"none","fieldType":"default","$ref":"#/definitions/documentType"},"IDSchemaVersion":{"bioAttributes":[],"fieldCategory":"none","format":"none","type":"number","fieldType":"default","minimum":0},"proofOfException":{"bioAttributes":[],"fieldCategory":"evidence","format":"none","fieldType":"default","$ref":"#/definitions/documentType"},"phone":{"bioAttributes":[],"validators":[{"langCode":null,"validator":"^[+]*([0-9]{1})([0-9]{9})$","arguments":[],"type":"regex"}],"fieldCategory":"pvt","format":"none","type":"string","fieldType":"default"},"introducerName":{"bioAttributes":[],"fieldCategory":"evidence","format":"none","fieldType":"default","$ref":"#/definitions/simpleType"},"proofOfRelationship":{"bioAttributes":[],"fieldCategory":"pvt","format":"none","fieldType":"default","$ref":"#/definitions/documentType"},"UIN":{"bioAttributes":[],"fieldCategory":"none","format":"none","type":"string","fieldType":"default"},"region":{"bioAttributes":[],"validators":[{"langCode":null,"validator":"^(?=.{0,50}$).*","arguments":[],"type":"regex"}],"fieldCategory":"pvt","format":"none","fieldType":"default","$ref":"#/definitions/simpleType"},"maritalStatus":{"bioAttributes":[],"fieldCategory":"pvt","format":"","fieldType":"dynamic","$ref":"#/definitions/simpleType"},"modeOfdelivery":{"bioAttributes":[],"fieldCategory":"pvt","format":"","fieldType":"dynamic","$ref":"#/definitions/simpleType"},"dualCitizenshipAvailability":{"bioAttributes":[],"fieldCategory":"pvt","format":"","fieldType":"dynamic","$ref":"#/definitions/simpleType"},"preferredLang":{"bioAttributes":[],"fieldCategory":"pvt","format":"none","type":"string","fieldType":"dynamic"}}}}}`
     })
 
     return h.response().code(202)

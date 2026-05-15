@@ -834,10 +834,12 @@
   dependencies:
     "@octokit/openapi-types" "^18.0.0"
 
-"@opencrvs/mosip@1.9.1":
-  version "1.9.1"
-  resolved "https://registry.yarnpkg.com/@opencrvs/mosip/-/mosip-1.9.1.tgz#40375b6dc6842db4bd9c62ea0f81262328eb5748"
-  integrity sha512-RMKlamApfEfR1GEnwYYRK1pGKGvxmoFDG0yt4VigPKGsdQZobcVpXXPq3YbBlkctb7mEUclD+en9HfmKF4turA==
+"@opencrvs/mosip@2.0.0-rc.6":
+  version "2.0.0-rc.6"
+  resolved "https://registry.yarnpkg.com/@opencrvs/mosip/-/mosip-2.0.0-rc.6.tgz#b70f40d684221bca1f0fbca4fff50802b39d90e4"
+  integrity sha512-lS9FnczllLYPcui3LusynEqOUwR8BUXS2wajzUTlSes5sNhh05fob75ozvWtFtdd7RoIUCGywBaHHGs1AMzS/Q==
+  dependencies:
+    zod "^4.1.12"
 
 "@opencrvs/toolkit@1.9.7":
   version "1.9.7"
@@ -5831,3 +5833,8 @@ zod@^3.24.1:
   version "3.24.1"
   resolved "https://registry.yarnpkg.com/zod/-/zod-3.24.1.tgz#27445c912738c8ad1e9de1bea0359fa44d9d35ee"
   integrity sha512-muH7gBL9sI1nciMZV67X5fTKKBLtwpZ5VBp1vsOQzj1MhrBZ4wlVCm3gedKZWLp0Oyel8sIGfeiz54Su+OVT+A==
+
+zod@^4.1.12:
+  version "4.4.3"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-4.4.3.tgz#b680f172885d18bbebf21a834ea25e55a1bbf356"
+  integrity sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ==
